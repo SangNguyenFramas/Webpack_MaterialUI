@@ -1,0 +1,20 @@
+{
+  "name": "Webpack_MaterialUI",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NTS333/Webpack_MaterialUI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NTS333/Webpack_MaterialUI/issues"
+  },
+  "homepage": "https://github.com/NTS333/Webpack_MaterialUI#readme"
+}
