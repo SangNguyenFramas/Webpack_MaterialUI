@@ -8,9 +8,10 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     display: 'flex',
-    height: '100%',
+     height: '100%',
     overflow: 'hidden',
-    width: '100%'
+    width: '100%',
+    top:64
   },
   wrapper: {
     display: 'flex',
@@ -24,13 +25,18 @@ const useStyles = makeStyles((theme) => ({
   contentContainer: {
     display: 'flex',
     flex: '1 1 auto',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    
   },
   content: {
     flex: '1 1 auto',
     height: '100%',
-    flexDirection:'column',
-  //  marginTop:'20px',
+      marginTop:'55px',
+      paddingTop:0,
+      bottom:0,
+      position:'relative',
+      overflow:'hidden',
+      
   }
 }));
 

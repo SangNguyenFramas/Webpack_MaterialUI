@@ -18,7 +18,17 @@ import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
 
 const useStyles = makeStyles(() => ({
-  root: {},
+  root: {
+    display:'flex',
+    justifyItems:'space-between',
+    marginBottom:0,
+   
+  },
+  toolbar:{
+    display:'flex',
+    justifyContent:'space-between',
+    alignItems:'center'
+  },
   avatar: {
     width: 60,
     height: 60
@@ -38,6 +48,8 @@ const useStyles = makeStyles(() => ({
     '&:hover':{
       backgroundColor:'rgba(0,0,0,0.3)'
     },
+    // width:'100px',
+    // height:'40px'
   }
 }));
 
@@ -66,7 +78,7 @@ const TopBar = ({
       elevation={0}
       {...rest}
     >
-      <Toolbar>
+      <Toolbar className={classes.toolbar}>
         {/* <RouterLink to="/"> */}
           {/* <Logo />
            */}
@@ -74,8 +86,8 @@ const TopBar = ({
               Giám sát nhà máy ....
            </Typography>
         {/* </RouterLink> */}
-        <Box flexGrow={1} />
-        <Hidden mdDown className={classes.logout}>
+        {/* <Box flexGrow={1} /> */}
+        <Hidden mdDown >
           {/* <IconButton color="inherit">
             <Badge
               badgeContent={notifications.length}
