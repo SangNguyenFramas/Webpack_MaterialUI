@@ -1,15 +1,27 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import SwipeableViews from 'react-swipeable-views';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import {Card, CardActions, CardContent, CardHeader, Grid,Box} from '@material-ui/core';
-import SCard from '../../components/SCard';
-import { entries } from 'lodash';
-
+import React from "react";
+import PropTypes from "prop-types";
+import SwipeableViews from "react-swipeable-views";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Typography from "@material-ui/core/Typography";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Grid,
+  Box,
+  Container,
+  Fade,
+  Slide,
+} from "@material-ui/core";
+import SCard from "../../components/SCard";
+import Maynghien from "../../components/Maynghien";
+import Page from "../../components/Page";
+import { relative } from "path";
+import KhoNghienTho_Sausay from "../../components/KhoNghienTho_Sausay";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -24,7 +36,7 @@ function TabPanel(props) {
       className={classes.tabpanel}
     >
       {value === index && (
-        < Grid spacing={1} container  justify='flex-start'>
+        <Grid spacing={3} container>
           {children}
         </Grid>
       )}
@@ -38,42 +50,82 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-
-
 const useStyles = makeStyles((theme) => ({
   root: {
-    
-     
-    // alignContent:'flex-end',
-    // justifyContent:'flex-end',
-    // justifyItems:'flex-end'
-    // overflow: 'hidden',
     // position: 'fixed',
-    //  bottom: 0,
-    // marginTop:0,
-    // paddingTop:0
-    paddingTop:64,
-    marginTop:-55,
-    position:'fixed',
-    width:'100%',
-    [theme.breakpoints.up('lg')]:{
-      width: 'calc(100% - 256px)',
+    width: "100vw",
+    // margin:'0 auto',
+    [theme.breakpoints.up("lg")]: {
+      width: "calc(100% - 256px)",
     },
-    flexGrow: 1,
+
+    // minHeight: '110vw',
+    // height:'100vw'
+    // paddingBottom: theme.spacing(3),
+    // position:'relative'
+    // paddingTop: '-64px',
+    // flexGrow: 1,
+    // display:'flex',
+    // justifyContent:'center'
   },
-  tabpanel:{
-    height:'100vh',
-    margin:'10px',
-    backgroundColor:'#444',
-    position:'relative',
-    display:'flex',
-    alignContent:'space-between',
-    color:'white'
-    // padding:'10px'
-  }
+  appbar: {
+    top: "4rem",
+    left: 256,
+    position: "fixed",
+    [theme.breakpoints.down("md")]: {
+      left: 0,
+      top: "3rem",
+      paddingTop: 0,
+    },
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    // height:'100%'
+  },
+  tabpanel: {
+    position: "relative",
+    top: "5rem",
+    margin: "0 auto",
+    // height:'110vh',
+    [theme.breakpoints.down("md")]: {
+      // position:'relative',
+      left: 0,
+      top: "3.5rem",
+      // height:'110vh',
+    },
+    // margin:'0 auto',
+    // display:'flex',
+    // justifyContent:'center'
+  },
+  container: {
+    height: "100%",
+  },
+  maynghienContainer: {
+    margin: "0 auto",
+    // left: 0,
+    // padding: 10,
+    [theme.breakpoints.down("md")]: {
+      // position:'relative',
+      margin: 0,
+      marginTop: 0,
+      padding: 0,
+    },
+  },
+  maynghien: {
+    display: "flex",
+    justifyContent: "center",
+    margin: 50,
+    padding: 10,
+    [theme.breakpoints.down("md")]: {
+      // position:'relative',
+      margin: 0,
+      marginTop: 10,
+    },
+  },
 }));
 
-export default ()=> {
+export default () => {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -87,63 +139,232 @@ export default ()=> {
   };
 
   return (
-    <div className={classes.root}>
-      <AppBar position="relative" color="transparent" >
-        <Tabs 
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="scrollable"
-          scrollButtons="on"
-          aria-label="full width tabs example"
-        >
-          <Tab label="Máy nghiền"  />
-          <Tab label="Kho nghiền thô - Sau sấy"  />
-          <Tab label="Kho nghiền tinh - Giũ bụi"  />
-          <Tab label="Máy ép"  />
-        </Tabs>
-      </AppBar>
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-        transitionDuration={
-          {
-            enter:5000,
-            exit:4000
-          }
-          
-        }
-      >
-        <TabPanel value={value} index={0}  >
-          <Grid item xs={12} sm={4} lg={4} >
-             <SCard Title='Máy nghiền tinh 1'>
+    <>
+      <Page className={classes.root} title="Dashboard">
+        <AppBar color="default" className={classes.appbar}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            indicatorColor="primary"
+            // textColor="primary"
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label="full width tabs example"
+          >
+            <Tab label="Máy nghiền" />
+            <Tab label="Kho nghiền thô - Sau sấy" />
+            <Tab label="Kho nghiền tinh - Giũ bụi" />
+            <Tab label="Máy ép" />
+          </Tabs>
+        </AppBar>
 
-             </SCard>
-          </Grid>
-          <Grid item xs={12} sm={4} lg={4} >
-             <SCard Title='Máy nghiền tinh 2'>
+        <TabPanel value={value} index={0}>
+          <Slide
+            direction="left"
+            in={true}
+            mountOnEnter
+            unmountOnExit
+            timeout={500}
+          >
+            <Container maxWidth={false} fixed className={classes.container}>
+              <Grid
+                container
+                //  spacing={3}
+                justify="center"
+                alignItems="center"
+                // padding={0}
+                className={classes.maynghienContainer}
+              >
+                <Grid
+                  item
+                  lg={3}
+                  sm={6}
+                  xl={3}
+                  xs={12}
+                  className={classes.maynghien}
+                >
+                  <Maynghien
+                    title="Máy nghiền thô 1"
+                    id_auto="NTho1__Auto"
+                    id_man="NTho1__Manual"
+                    
+                    aria-lable="Control_NTho1"
+                    aria-value=''
+                    
+                  />
+                </Grid>
+                <Grid
+                  item
+                  lg={3}
+                  sm={6}
+                  xl={3}
+                  xs={12}
+                  className={classes.maynghien}
+                >
+                  <Maynghien
+                    title="Máy nghiền thô 2"
+                    id_auto="NTho2__Auto"
+                    id_man="NTho2__Manual"
+                    tagName="RemoteStation1/PLCNghien_EpVien/MayEpVien2/Accept"
+                  />
+                </Grid>
+                <Grid
+                  item
+                  lg={3}
+                  sm={6}
+                  xl={3}
+                  xs={12}
+                  className={classes.maynghien}
+                >
+                  <Maynghien
+                    title="Máy nghiền tinh"
+                    id_auto="NTinh__Auto"
+                    id_man="NTinh__Manual"
+                    // tagName="RemoteStation1/PLCNghien_EpVien/MayEpVien2/Accept"
+                  />
+                </Grid>
 
-             </SCard>
-          </Grid>
-          <Grid item xs={12} sm={4} lg={4} >
-             <SCard Title='Máy nghiền thô 1'>
+                {/* <Grid
+            item
+            lg={4}
+            sm={6}
+            xl={4}
+            xs={12}
+          >
+            <Maynghien />
+          </Grid> */}
+              </Grid>
+            </Container>
+          </Slide>
+        </TabPanel>
 
-             </SCard>
-          </Grid>
-          
+        <TabPanel value={value} index={1}>
+          <Container maxWidth={false} fixed className={classes.container}>
+            <Grid
+              container
+              //  spacing={3}
+              justify="center"
+              alignItems="center"
+              padding={0}
+              className={classes.maynghienContainer}
+            >
+              <Grid
+                item
+                lg={4}
+                sm={6}
+                xl={4}
+                xs={12}
+                className={classes.maynghien}
+              >
+                <KhoNghienTho_Sausay title="Kho nghiền thô" />
+              </Grid>
+              <Grid
+                item
+                lg={4}
+                sm={6}
+                xl={4}
+                xs={12}
+                className={classes.maynghien}
+              >
+                <KhoNghienTho_Sausay />
+              </Grid>
+              {/* <Grid
+            item
+            lg={4}
+            sm={6}
+            xl={4}
+            xs={12}
+          >
+            <Maynghien />
+          </Grid> */}
+            </Grid>
+          </Container>
         </TabPanel>
-        <TabPanel value={value} index={1} >
-          Item Two
+        <TabPanel value={value} index={2}>
+          <Container maxWidth={false} fixed className={classes.container}>
+            <Grid
+              container
+              //  spacing={3}
+              justify="center"
+              alignItems="center"
+              padding={0}
+              className={classes.maynghienContainer}
+            >
+              <Grid
+                item
+                lg={4}
+                sm={6}
+                xl={4}
+                xs={12}
+                className={classes.maynghien}
+              >
+                <Maynghien />
+              </Grid>
+              <Grid
+                item
+                lg={4}
+                sm={6}
+                xl={4}
+                xs={12}
+                className={classes.maynghien}
+              >
+                <Maynghien />
+              </Grid>
+              {/* <Grid
+            item
+            lg={4}
+            sm={6}
+            xl={4}
+            xs={12}
+          >
+            <Maynghien />
+          </Grid> */}
+            </Grid>
+          </Container>
         </TabPanel>
-        <TabPanel value={value} index={2} >
-          Item Three
+        <TabPanel value={value} index={3}>
+          <Container maxWidth={false} fixed className={classes.container}>
+            <Grid
+              container
+              //  spacing={3}
+              justify="center"
+              alignItems="center"
+              padding={0}
+              className={classes.maynghienContainer}
+            >
+              <Grid
+                item
+                lg={4}
+                sm={6}
+                xl={4}
+                xs={12}
+                className={classes.maynghien}
+              >
+                <Maynghien />
+              </Grid>
+              <Grid
+                item
+                lg={4}
+                sm={6}
+                xl={4}
+                xs={12}
+                className={classes.maynghien}
+              >
+                <Maynghien />
+              </Grid>
+              {/* <Grid
+            item
+            lg={4}
+            sm={6}
+            xl={4}
+            xs={12}
+          >
+            <Maynghien />
+          </Grid> */}
+            </Grid>
+          </Container>
         </TabPanel>
-        <TabPanel value={value} index={3} >
-          Item Four
-        </TabPanel>
-      </SwipeableViews>
-    </div>
+      </Page>
+    </>
   );
-}
+};

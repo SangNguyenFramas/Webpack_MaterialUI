@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -10,128 +10,127 @@ import {
   Link,
   TextField,
   Typography,
-  makeStyles,
-  Card,
-  CardHeader,
-  CardContent
+  makeStyles
 } from '@material-ui/core';
 import Page from '../../components/Page';
-import store2 from 'store2';
+
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    magin: '10px 10px',
-    padding: '0 20px'
+    //  backgroundColor: 'glue',
+     height: '100%',
+    paddingBottom: theme.spacing(3),
+    paddingTop: theme.spacing(3),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    color:'black'
   },
-  container: {
-    backgroundColor: '#333',
-    // display:'flex',
-    // direction:'column',
-    // justifyContent:'center',
-    // alignItems:'center',
-    margin: '0 auto',
-    padding: '30px'
+  title:{
+    display:'flex',
+    justifyContent:'center',
+    marginTop:'1em',
+    color:'white'
   },
-  cardheader: {
-    color: 'white',
-    backgroundColor: '#333',
-    fontSize: '2e',
-    textAlign: 'center',
-    border: 'none',
-    marginTop: '10px'
+  content:{
+    backgroundColor:'#333',
+    
   },
-  cardfield: {
-    color: 'white',
+  textRoot: {
     '& label.Mui-focused': {
-      color: 'white',
+      color: '#fff',
     },
     '& .MuiInput-underline:after': {
-      borderBottomColor: 'white',
+      borderColor: 'blue',
     },
-
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: '#0',
+      },
+      '&:hover fieldset': {
+        borderColor: 'cyan',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'white',
+      },
+    },
   },
-  focused_field: {
-    color: 'white'
-  }
 }));
 
 const LoginView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
-  const [logged, setlogged] = useState(true);
-  const [username, setUsername] = useState('admin')
-  const [password, setPassword] = useState('Password123')
-  useEffect(() => {
-    if (logged) {
-      // window.preventBack();
-      window.preventBack();
-    }
 
-  }, [])
-  // const handleSubmit = ()=>{
-
-  //   // navigate('/app/dashboard');
-
-  // }
   return (
     <Page
       className={classes.root}
       title="Login"
     >
-
-      <Container maxWidth="xs" className={classes.container}>
-        <Typography variant='h1' className={classes.cardheader}>
-          Đăng nhập
-          </Typography>
-        <Formik
-          initialValues={{
-            username: 'admin',
-            password: 'Password123'
-          }}
-          validationSchema={Yup.object().shape({
-            username: Yup.string().required('User Name is required'),
-            password: Yup.string().max(255).required('Password is required')
-          })}
-          onSubmit={() => {
-            let auth = { 'username': username, 'password': password }
-            localStorage.setItem('auth', JSON.stringify(auth))
-            let data = localStorage.getItem('auth')
-            console.log(JSON.parse(data))
-            navigate('/app/dashboard');
-          }}
-        >
-          {({
-            errors,
-            handleBlur,
-            handleChange,
-            handleSubmit,
-            isSubmitting,
-            touched,
-            values
-          }) => (
-              <form onSubmit={handleSubmit} style={{ margin: '0 auto' }}>
-
+      <Box
+        display="flex"
+        flexDirection="column"
+        height="100%"
+        justifyContent="center"
+      >
+        <Container maxWidth="sm" className={classes.content}>
+          <Formik
+            initialValues={{
+              email: 'demo@123.io',
+              password: 'Password123'
+            }}
+            validationSchema={Yup.object().shape({
+              email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+              password: Yup.string().max(255).required('Password is required')
+            })}
+            onSubmit={(values) => {
+              console.log(values);
+              localStorage.setItem('userInfo',JSON.stringify(values))
+              navigate('/app/dashboard', { replace: true });
+             
+            }}
+            handleChange={e=>{
+                alert(e);
+            }}
+          >
+            {({
+              errors,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+              isSubmitting,
+              touched,
+              values
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <Box mb={3}>
+                  <Typography
+                    color="textPrimary"
+                    variant="h2"
+                    className={classes.title}
+>
+                    Sign in
+                  </Typography>
+                 
+                </Box>
+               
+                <Box
+                  mt={3}
+                  mb={1}
+                >
+                 
+                </Box>
                 <TextField
-                  error={Boolean(touched.username && errors.username)}
+                  error={Boolean(touched.email && errors.email)}
                   fullWidth
-                  helperText={touched.username && errors.username}
-                  label="User Name"
+                  helperText={touched.email && errors.email}
+                  label="Email Address"
                   margin="normal"
-                  name="username"
+                  name="email"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={username}
-                  variant="standard"
-                  InputProps={{
-                    className: classes.cardfield
-                  }}
-                  className={classes.cardfield}
-                  InputLabelProps={{
-                    className: classes.focused_field
-                  }}
+                  type="email"
+                  value={values.email}
+                  variant="outlined"
+                  // color='secondary'
+                  className={classes.textRoot}
                 />
                 <TextField
                   error={Boolean(touched.password && errors.password)}
@@ -143,18 +142,11 @@ const LoginView = () => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   type="password"
-                  value={password}
-                  variant="standard"
-                  InputProps={{
-                    className: classes.cardfield
-                  }}
-                  className={classes.cardfield}
-                  InputLabelProps={{
-                    className: classes.focused_field
-                  }}
-
+                  value={values.password}
+                  variant="outlined"
+                  className={classes.textRoot}
                 />
-                <Box my={2}>
+                <Box my={2} p={3}>
                   <Button
                     color="primary"
                     disabled={isSubmitting}
@@ -163,17 +155,15 @@ const LoginView = () => {
                     type="submit"
                     variant="contained"
                   >
-                    Đăng nhập
+                    Sign in
                   </Button>
                 </Box>
-
+               
               </form>
             )}
-        </Formik>
-      </Container>
-
-
-
+          </Formik>
+        </Container>
+      </Box>
     </Page>
   );
 };

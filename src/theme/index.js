@@ -5,15 +5,13 @@ import typography from './typography';
 const theme = createMuiTheme({
   palette: {
     type:'dark',
-    background: {
-      dark: '#3333',
-      default: colors.common.blueGrey,
-      paper: colors.common.black
+    primary:colors.common.blue,
+    secondary: {
+      light: '  #0066ff',
+      main: '#d32f2f',
+      // dark: will be calculated from palette.secondary.main,
+      contrastText: 'white',
     },
-    text: {
-      primary: colors.blueGrey[900],
-      secondary: colors.blueGrey[600]
-    }
   },
   shadows,
   typography

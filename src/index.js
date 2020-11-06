@@ -2,15 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from "react-router-dom";
 import App from './App';
-
+import {
+  RecoilRoot,
+  
+} from 'recoil';
 // import './assets/styles/style.scss';
 // import './assets/styles/style.css';
-import './index.scss'
+// import './index.scss'
 
 ReactDOM.render((
-  <BrowserRouter>
+  <RecoilRoot>
+<BrowserRouter>
     <App />
   </BrowserRouter>
+  </RecoilRoot>
+  
 ), document.getElementById('root'));
 
 

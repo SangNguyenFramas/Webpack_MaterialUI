@@ -15,6 +15,10 @@ module.exports = {
     devServer: {
         contentBase: path.join(__dirname, 'src'),
         historyApiFallback: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+          }
     },
     plugins: [
         new HtmlWebpackPlugin({

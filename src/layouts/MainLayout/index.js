@@ -6,17 +6,18 @@ import TopBar from './TopBar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.dark,
-    display: 'flex',
-     height: '100%',
-    overflow: 'hidden',
+    // position:'fixed',
+    // display: 'flex',
+    height: '100%',
+     overflow: 'auto',
     width: '100%',
-    top:64
+    // margin:'0 auto'
   },
   wrapper: {
-    display: 'flex',
-    flex: '1 1 auto',
-    overflow: 'hidden',
+    // display: 'flex',
+    // flex: '1 1 auto',
+    // overflow: 'auto',
+    // height:'110vh',
     // paddingTop: 64,
     [theme.breakpoints.up('lg')]: {
       paddingLeft: 256
@@ -25,25 +26,25 @@ const useStyles = makeStyles((theme) => ({
   contentContainer: {
     display: 'flex',
     flex: '1 1 auto',
-    overflow: 'hidden',
-    
+    // overflow: 'auto',
   },
   content: {
     flex: '1 1 auto',
-    height: '100%',
-      marginTop:'55px',
-      paddingTop:0,
-      bottom:0,
-      position:'relative',
-      overflow:'hidden',
-      
+    // height:'150%',
+    [theme.breakpoints.down('sm')]: {
+      marginTop:'45px',
+    },
+     
+      // overflow: 'auto',
+      display:'flex',
+      justifyContent:'center'
   }
 }));
 
 const MainLayout = () => {
   const classes = useStyles();
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
-
+ 
   return (
     <div className={classes.root}>
       <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
