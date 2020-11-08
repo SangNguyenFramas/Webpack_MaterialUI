@@ -3,39 +3,38 @@
       // autoBtn.addEventListener('click')
       $("#test").click(() => {
         // toggle();
-        if (window.value == '1') {
+        if (window.value == "1") {
           // writeTag(0)
-          
+
           // $('#Control_NTho1').prop("checked",false)
-          $('#test').css("background","green")
+          $("#test").css("background", "green");
           // alert($('.MuiSwitch-colorSecondary').prop("aria-checked"))
         }
-        else  
         // writeTag(1)
-        
-        // $('#Control_NTho1').attr("checked",true)
-        $('#test').css("background","red")
 
-          // alert(tag.attr('aria-checked'))
-        
+        // $('#Control_NTho1').attr("checked",true)
+        else $("#test").css("background", "red");
+
+        // alert(tag.attr('aria-checked'))
       });
-    
+
       let auto = true;
       let manual = false;
       $(document).ready(() => {
-        setInterval(function () {
-          getAllTagsAsync();
-        }, 100);
+        // setInterval(function () {
+        //   getAllTagsAsync(()=>{});
+        // }, 500);
       });</script><script>//Reference to simpleHub proxy
       var serverHubProxy;
       var isConnected;
-      let tags =[];
-      let  isStarted = false;
-      let BasePath = 'Local Station/Channel1/Device1'
+      let channels = [];
+      let devices = [];
+      let tags = [];
+      let isStarted = false;
+      let BasePath = "RemoteStation1/PLCKhoNghienTho/KhoNghienTho";
       // var url = "http://localhost:1000/signalr";
       var url = "http://localhost:8800/easyScada";
-      
-  
+
       //Connect to the SignalR server and get the proxy for simpleHub
       function connect(onValueChanged) {
         $.getScript(url + "/hubs", function () {
@@ -45,13 +44,13 @@
           serverHubProxy = $.connection.easyDriverServerHub;
           //Reigster to the "AddMessage" callback method of the hub
           //This method is invoked by the hub
-         
+
           //Connect to hub
           $.connection.hub
             .start()
             .done(function () {
               var Status = $("#status");
-              Status.css({"background": "green","color":'white'});
+              Status.css({ background: "green", color: "white" });
               Status.html("Connected");
               isStarted = true;
               // simpleHubProxy.server.setUserName($("#txtUserName").val());
@@ -59,35 +58,35 @@
             .fail(function () {
               $.connection.hub.start();
             });
-  
+
           ////////////////////////////
           $.connection.hub.stateChanged(function (change) {
             var Status = $("#status");
             if (change.newState === $.signalR.connectionState.reconnecting) {
-              Status.css({"background": "yellow","color":'blue'});
-              Status.html("Reconnecting")
+              Status.css({ background: "yellow", color: "blue" });
+              Status.html("Reconnecting");
             } else if (
               change.newState === $.signalR.connectionState.connected
             ) {
               // var Status = $("#status");
-              Status.css({"background": "green","color":'white'});
-              Status.html("Connected")
+              Status.css({ background: "green", color: "white" });
+              Status.html("Connected");
             } else if (
               change.newState === $.signalR.connectionState.disconnected
             ) {
               // var Status = $("#status");
-              Status.css({"background": "red","color":'white'});
-              Status.html("Disconneted")
+              isStarted = false;
+              Status.css({ background: "red", color: "white" });
+              Status.html("Disconneted");
               setTimeout(function () {
                 $.connection.hub.start();
                 // alert("reconnect");
               }, 5000); // Restart connection after 5 seconds.you can set the time based your requirement
             }
           });
-         
         });
       }
-  
+
       //Disconnect from the server
       function disconnect() {
         if (serverHubProxy != null) {
@@ -96,91 +95,167 @@
           });
         }
       }
-  
+
       //Send a message to server
-     
-  
+
       function getStation() {
         if (serverHubProxy != null) {
-          serverHubProxy.server.getStation("Local Station")
-            .done(
-            (value)=>{
-                // alert(value)
-            });
-      }
-    }
-    
-   async function getAllTagsAsync() {
-        if (serverHubProxy != null) {
-
-        isStarted && await serverHubProxy.server.getAllTagsAsync(BasePath)
-            .done(
-              tags=>{
-                // console.log(JSON.parse(tags));
-                return window.tags = JSON.parse(tags)
-            }).fail(
-              err => {
-                return null;
-              }
-            );
-      }
-    }
-      function subsCribe(stationjson, communicationMode, refreshRate) {
-        if (serverHubProxy != null) {
-          serverHubProxy.server.subsCribe(stationjson, communicationMode, refreshRate)
-            .done(
-              console.log("a")
-            );
+          serverHubProxy.server.getStation("Local Station").done((value) => {
+            // alert(value)
+          });
         }
       }
-    async  function writeTag(tag,value,callback) {
-      console.log(tag);
+      function getAllElementsAsync(callback) {
         if (serverHubProxy != null) {
-  
-          var WriteMode =
-          {
-            "WriteAllValue": 0,
-            "WriteLatestValue": 1,
+          isStarted &&  serverHubProxy.server.getAllElementsAsync().done((value) => {
+            // alert(value)
+            let res = JSON.parse(value);
+           
+            let Schannels = res[1].Childs;
+                window.channels = Schannels;
+                
+                Schannels.forEach((channel) => {
+                   let devices = channel.Childs;
+                   //console.log(devices)
+                   if (devices) {
+                    window.devices = devices;
+                    devices.forEach(device=>{
+                      if (device.Name !== 'Device Statistics' && device.Name !== "Register Hints") {
+                        // console.log(device.Name);
+                        let tags = device.Childs;
+                        if (tags && tags.length != 0) {
+                          window.tags= tags;
+                          callback(tags);
+                          
+                          // console.log(tags)
+                          // callback(tags);
+                          tags.forEach(tag=>{
+                            // console.log(tag)
+                            // console.log(tag.Path);
+                          })
+                        }
+                      }
+                        // if (device.Name != 'Device Statistics') {
+                        
+                        // }
+                    })
+                   }
+                });
+                // console.log(value);
+                
+            // while (res[1].Childs.length != 0) {
+            //     // console.log(res.Childs)
+            // }
+            // console.log(JSON.parse(value));
+          });
+        }
+      }
+      async function getAllChannelsAsync(pathStation,callback) {
+        if (serverHubProxy != null) {
+          isStarted &&
+            (await serverHubProxy.server
+              .getAllChannelsAsync(pathStation)
+              .done((channels) => {
+                let Schannels = JSON.parse(channels);
+                window.channels = Schannels;
+                Schannels.forEach((channel) => {
+                   let devices = channel.Devices;
+                   if (devices) {
+                    window.devices = devices;
+                    devices.forEach(device=>{
+                        
+                        // if (device.Name != 'Device Statistics') {
+                        let tags = device.Tags;
+                        if (tags) {
+                          // window.tags= tags;
+                          callback(tags);
+                          // Stags.forEach(tag=>{
+                          //   console.log(tags);
+                          //   tags.push(tag)
+                           
+                          //   // console.log(tag)
+                          //   // console.log(tag.Path);
+                          // })
+                        }
+                        // }
+                    })
+                   }
+                });
+               
+                // console.log(value);
+                return (window.channels = JSON.parse(channels));
+              })
+              .fail((err) => {
+                return err;
+              }));
+        }
+      }
+
+      async function getAllTagsAsync(callback) {
+        if (serverHubProxy != null) {
+          isStarted &&
+            (await serverHubProxy.server
+              .getAllTagsAsync(BasePath)
+              .done((tags) => {
+                //  console.log(tags);
+                // callback(JSON.parse(tags));
+                // return (window.tags = JSON.parse(tags));
+              })
+              .fail((err) => {
+                return null;
+              }));
+        }
+      }
+      function subsCribe(stationjson, communicationMode, refreshRate) {
+        if (serverHubProxy != null) {
+          serverHubProxy.server
+            .subsCribe(stationjson, communicationMode, refreshRate)
+            .done(console.log("a"));
+        }
+      }
+      async function writeTag(tag, value, callback) {
+        // console.log(tag);
+        if (serverHubProxy != null) {
+          var WriteMode = {
+            WriteAllValue: 0,
+            WriteLatestValue: 1,
           };
-  
-          var WritePiority =
-          {
-            "Default": 0,
-            "Medium": 1,
-            "High": 2,
-            "Highest": 3,
+
+          var WritePiority = {
+            Default: 0,
+            Medium: 1,
+            High: 2,
+            Highest: 3,
           };
           var today = new Date();
-          var dd = String(today.getDate()).padStart(2, '0');
-          var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+          var dd = String(today.getDate()).padStart(2, "0");
+          var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
           var yyyy = today.getFullYear();
-          today = mm + '/' + dd + '/' + yyyy;
+          today = mm + "/" + dd + "/" + yyyy;
           var WriteCommand = {
-            PathToTag:BasePath+`/${tag}`,
+            PathToTag: BasePath + `/${tag}`,
             Value: value,
             SendTime: today,
             WritePiority: WritePiority.High,
-            WriteMode: WriteMode.WriteAllValue
+            WriteMode: WriteMode.WriteAllValue,
           };
-  
-          await serverHubProxy.server.writeTagValueAsync(WriteCommand)
-            .done(
-             value=>{
+
+          await serverHubProxy.server
+            .writeTagValueAsync(WriteCommand)
+            .done((value) => {
               //  console.log(value);
-                callback(value)
-                return value
-             })
-            .fail(
-              function (err) { 
-                callback(err)
-                return err
-               }
-            )
+              callback(value);
+              return value;
+            })
+            .fail(function (err) {
+              callback(err);
+              return err;
+            });
         }
       }
       $(window).on("load", function (e) {
-        connect();
+        //  connect();
       });
       $(window).on("unload", function (e) {
-        disconnect();
+        //  disconnect();
       });</script><script src="/index.bundle.js"></script></body></html>

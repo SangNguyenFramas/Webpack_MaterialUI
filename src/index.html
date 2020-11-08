@@ -144,12 +144,13 @@
                    if (devices) {
                     window.devices = devices;
                     devices.forEach(device=>{
-                        
-                        // if (device.Name != 'Device Statistics') {
+                      if (device.Name !== 'Device Statistics' && device.Name !== "Register Hints") {
+                        // console.log(device.Name);
                         let tags = device.Childs;
-                        if (tags) {
+                        if (tags && tags.length != 0) {
                           window.tags= tags;
-                          callback(tags)
+                          callback(tags);
+                          
                           // console.log(tags)
                           // callback(tags);
                           tags.forEach(tag=>{
@@ -157,6 +158,9 @@
                             // console.log(tag.Path);
                           })
                         }
+                      }
+                        // if (device.Name != 'Device Statistics') {
+                        
                         // }
                     })
                    }
@@ -187,17 +191,21 @@
                         // if (device.Name != 'Device Statistics') {
                         let tags = device.Tags;
                         if (tags) {
-                          window.tags= tags;
+                          // window.tags= tags;
                           callback(tags);
-                          tags.forEach(tag=>{
-                            // console.log(tag)
-                            // console.log(tag.Path);
-                          })
+                          // Stags.forEach(tag=>{
+                          //   console.log(tags);
+                          //   tags.push(tag)
+                           
+                          //   // console.log(tag)
+                          //   // console.log(tag.Path);
+                          // })
                         }
                         // }
                     })
                    }
                 });
+               
                 // console.log(value);
                 return (window.channels = JSON.parse(channels));
               })
@@ -213,7 +221,7 @@
             (await serverHubProxy.server
               .getAllTagsAsync(BasePath)
               .done((tags) => {
-                 console.log(tags);
+                //  console.log(tags);
                 // callback(JSON.parse(tags));
                 // return (window.tags = JSON.parse(tags));
               })
@@ -230,7 +238,7 @@
         }
       }
       async function writeTag(tag, value, callback) {
-        console.log(tag);
+        // console.log(tag);
         if (serverHubProxy != null) {
           var WriteMode = {
             WriteAllValue: 0,

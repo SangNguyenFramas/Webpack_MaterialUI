@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import SwipeableViews from "react-swipeable-views";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -18,11 +18,13 @@ import {
   Slide,
 } from "@material-ui/core";
 import SCard from "../../components/SCard";
-import Maynghien from "../../components/Maynghien";
 import Page from "../../components/Page";
-import { relative } from "path";
 import KhoNghienTho_Sausay from "../../components/KhoNghienTho_Sausay";
-
+import KhoNghienTinh from "../../components/KhoNghienTinh";
+import TagFile from "../../TagsFile.json";
+import { readTagFile } from "../../utils/ReadTagFile";
+import MaynghienTho1 from "../../components/MaynghienTho1";
+import MaynghienTho2 from "../../components/MaynghienTho2";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   const classes = useStyles();
@@ -125,11 +127,72 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
-  const classes = useStyles();
-  const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+const NTho1_Tags = {
+  Accept:"MayNghienTho1_Accept",
+  PL_Auto:"MayNghienTho1_PL_Auto",
+  PL_Auto:"MayNghienTho1_PL_Auto",
+  PL_FW_MN:"MayNghienTho1_PL_FW_MN",
+  PL_RV_MN:"MayNghienTho1_PL_RV_MN",
+  PL_Btai:"MayNghienTho1_PL_Btai",
+  PL_BTT:"MayNghienTho1_PL_BTT",
+  PL_Qhut:"MayNghienTho1_PL_Qhut",
+  PL_OVL_MN:"MayNghienTho1_PL_OVL_MN",
+  PL_OVL_Btai:"MayNghienTho1_PL_OVL_Btai",
+  PL_OVL_Qhut:"MayNghienTho1_PL_OVL_Qhut",
+  PL_OVL_BTT:"MayNghienTho1_PL_OVL_BTT",
+  Alarm_HT:"MayNghienTho1_Alarm_HT",
+  Resuft_Hz_BT1:"MayNghienTho1_Resuft_Hz_BT1",
+  Current_Digital_MN:"MayNghienTho1_Current_Digital_MN",
+  Current_Digital_QH1:"MayNghienTho1_Current_Digital_QH1",
+  BT_RST_MN:'MayNghienTho1_BT_RST_MN',
+  BT_Start_Btai:'MayNghienTho1_BT_Start_Btai',
+  BT_Start_FW_MN:'MayNghienTho1_BT_Start_FW_MN',
+  BT_Start_Qhut:'MayNghienTho1_BT_Start_Qhut',
+  BT_Start_RV_MN:'MayNghienTho1_BT_Start_RV_MN',
+  BT_Stop_Btai:'MayNghienTho1_BT_Stop_Btai',
+  BT_Stop_MN:'MayNghienTho1_BT_Stop_MN',
+  BT_Stop_Qhut:'MayNghienTho1_BT_Stop_Qhut',
+  In_Hz_BT:'MayNghienTho1_In_Hz_BT'
 
+
+
+
+};
+const NTho2_Tags = {
+  Accept:"MayNghienTho2_Accept",
+  PL_Auto:"MayNghienTho2_PL_Auto",
+  PL_Auto:"MayNghienTho2_PL_Auto",
+  PL_FW_MN:"MayNghienTho2_PL_FW_MN",
+  PL_RV_MN:"MayNghienTho2_PL_RV_MN",
+  PL_Btai:"MayNghienTho2_PL_Btai",
+  PL_BTT:"MayNghienTho2_PL_BTT",
+  PL_Qhut:"MayNghienTho2_PL_Qhut",
+  PL_OVL_MN:"MayNghienTho2_PL_OVL_MN",
+  PL_OVL_Btai:"MayNghienTho2_PL_OVL_Btai",
+  PL_OVL_Qhut:"MayNghienTho2_PL_OVL_Qhut",
+  PL_OVL_BTT:"MayNghienTho2_PL_OVL_BTT",
+  Alarm_HT:"MayNghienTho2_Alarm_HT",
+  Resuft_Hz_BT1:"MayNghienTho2_Resuft_Hz_BT1",
+  Current_Digital_MN:"MayNghienTho2_Current_Digital_MN",
+  Current_Digital_QH1:"MayNghienTho2_Current_Digital_QH1",
+  BT_RST_MN:'MayNghienTho2_BT_RST_MN',
+  BT_Start_Btai:'MayNghienTho2_BT_Start_Btai',
+  BT_Start_FW_MN:'MayNghienTho2_BT_Start_FW_MN',
+  BT_Start_Qhut:'MayNghienTho2_BT_Start_Qhut',
+  BT_Start_RV_MN:'MayNghienTho2_BT_Start_RV_MN',
+  BT_Stop_Btai:'MayNghienTho2_BT_Stop_Btai',
+  BT_Stop_MN:'MayNghienTho2_BT_Stop_MN',
+  BT_Stop_Qhut:'MayNghienTho2_BT_Stop_Qhut',
+  In_Hz_BT:'MayNghienTho2_In_Hz_BT'
+};
+
+
+
+export default () => {
+const classes = useStyles();
+  const theme = useTheme();
+const [value, setValue] = React.useState(0);
+  const [tagsConstant, settagsConstant] = useState({})
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -137,7 +200,15 @@ export default () => {
   const handleChangeIndex = (index) => {
     setValue(index);
   };
-
+  useEffect(() => {
+    (
+      async ()=>{
+        const tagFile = await readTagFile();
+        //  console.log(tagFile);
+       await settagsConstant(tagFile)
+      }
+    )();
+  }, []);
   return (
     <>
       <Page className={classes.root} title="Dashboard">
@@ -183,14 +254,11 @@ export default () => {
                   xs={12}
                   className={classes.maynghien}
                 >
-                  <Maynghien
+                  <MaynghienTho1
                     title="Máy nghiền thô 1"
                     id_auto="NTho1__Auto"
                     id_man="NTho1__Manual"
-                    
-                    aria-lable="Control_NTho1"
-                    aria-value=''
-                    
+                    tagListProp={NTho1_Tags}
                   />
                 </Grid>
                 <Grid
@@ -201,11 +269,11 @@ export default () => {
                   xs={12}
                   className={classes.maynghien}
                 >
-                  <Maynghien
+                  <MaynghienTho1
                     title="Máy nghiền thô 2"
                     id_auto="NTho2__Auto"
                     id_man="NTho2__Manual"
-                    tagName="RemoteStation1/PLCNghien_EpVien/MayEpVien2/Accept"
+                    tagListProp={NTho2_Tags}
                   />
                 </Grid>
                 <Grid
@@ -216,12 +284,12 @@ export default () => {
                   xs={12}
                   className={classes.maynghien}
                 >
-                  <Maynghien
+                  {/* <MaynghienTho2
                     title="Máy nghiền tinh"
                     id_auto="NTinh__Auto"
                     id_man="NTinh__Manual"
-                    // tagName="RemoteStation1/PLCNghien_EpVien/MayEpVien2/Accept"
-                  />
+                    tagList={tagsConstant}
+                  /> */}
                 </Grid>
 
                 {/* <Grid
@@ -298,7 +366,7 @@ export default () => {
                 xs={12}
                 className={classes.maynghien}
               >
-                <Maynghien />
+                <KhoNghienTinh />
               </Grid>
               <Grid
                 item
@@ -308,7 +376,7 @@ export default () => {
                 xs={12}
                 className={classes.maynghien}
               >
-                <Maynghien />
+                <KhoNghienTinh />
               </Grid>
               {/* <Grid
             item
@@ -340,7 +408,7 @@ export default () => {
                 xs={12}
                 className={classes.maynghien}
               >
-                <Maynghien />
+                <MaynghienTho1 />
               </Grid>
               <Grid
                 item
@@ -350,7 +418,7 @@ export default () => {
                 xs={12}
                 className={classes.maynghien}
               >
-                <Maynghien />
+                <MaynghienTho1 />
               </Grid>
               {/* <Grid
             item

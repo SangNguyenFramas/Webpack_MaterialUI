@@ -8,7 +8,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-import {useRecoilValue} from 'recoil';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import LoopIcon from '@material-ui/icons/Loop';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import {
@@ -30,10 +30,10 @@ import {
   InputAdornment,
   Snackbar,
 } from "@material-ui/core";
-import Maynghien from "./Maynghien";
+import Maynghien from "./MaynghienTho1";
 import SwitchBase from "@material-ui/core/internal/SwitchBase";
 import { Alert } from "@material-ui/lab";
-import { tagsState } from "../stateManager";
+import { tagsFileState, tagsState } from "../stateManager";
 const useStyles = makeStyles(theme=>({
   dialogroot: {
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -133,14 +133,42 @@ const useStyles = makeStyles(theme=>({
     
   // }
 }));
-export default function ControlPanel_MayNghien(props) {
-  const tags = useRecoilValue(tagsState);
+ function ControlPanel_MayNghien(props) {
+  const [tags ,setTags] = useRecoilState(tagsState);
   const classes = useStyles();
-  const { isOpen, handleClose ,tagName} = props;
-  const [isDisabled, setisDisabled] = useState(true);
+  const { isOpen, handleClose ,tagName,tagListProp} = props;
+  const [isDisabled, setisDisabled] = useState(false);
   const [disableAcept, setdisableAcept] = useState(false)
   const [acept, setacept] = useState(false)
   const [isAllowReading, setisAllowReading] = useState(true);
+  const tagList = useRecoilValue(tagsFileState);
+ 
+  const [Alarm_HT, setAlarm_HT] = useState(false);
+  const [PL_Auto, setPL_Auto] = useState(false);
+  const [PL_Manual, setPL_Manual] = useState(false);
+  const [PL_Btai, setPL_Btai] = useState(false);
+  const [PL_BTT, setPL_BTT] = useState(false);
+  const [PL_Qhut, setPL_Qhut] = useState(false);
+  const [PL_FW_MN, setPL_FW_MN] = useState(false);
+  const [PL_RV_MN, setPL_RV_MN] = useState(false);
+  const [PL_OVL_Btai, setPL_OVL_Btai] = useState(false);
+  const [PL_OVL_BTT, setPL_OVL_BTT] = useState(false);
+  const [PL_OVL_MN, setPL_OVL_MN] = useState(false);
+  const [PL_OVL_Qhut, setPL_OVL_Qhut] = useState(false);
+  const [Result_Hz_BT1, setResult_Hz_BT1] = useState(null);
+  const [Current_Digital_MN, setCurrent_Digital_MN] = useState(null);
+  const [Current_Digital_QH1, setCurrent_Digital_QH1] = useState(null);
+  
+  const [Accept, setAccept] = useState(false);
+  const [BT_RST_MN, setBT_RST_MN] = useState(false);
+  const [BT_Start_Btai, setBT_Start_Btai] = useState(false);
+  const [BT_Start_FW_MN, setBT_Start_FW_MN] = useState(false);
+  const [BT_Start_Qhut, setBT_Start_Qhut] = useState(false);
+  const [BT_Start_RV_MN, setBT_Start_RV_MN] = useState(false);
+  const [BT_Stop_Btai, setBT_Stop_Btai] = useState(false);
+  const [BT_Stop_MN, setBT_Stop_MN] = useState(false);
+  const [BT_Stop_Qhut, setBT_Stop_Qhut] = useState(false);
+  const [In_Hz_BT, setIn_Hz_BT] = useState(null);
 
   //   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
@@ -202,30 +230,134 @@ export default function ControlPanel_MayNghien(props) {
       // setdisableAcept(false); //set cho switch Acept
       // setisAllowReading(true);
   
-       console.log(callbackValue);
+      //  console.log(callbackValue);
       // return callbackValue;
   }
-  const handleAceptChange = (e,checked)=>{
+  const handleAceptChange =async (e,checked)=>{
       // console.log(e)
-      setacept(checked);
+      console.log(checked);
+      setAccept(checked);
       // setisAllowReading(false);
       setdisableAcept(true);
-       window.writeTag(tagName,checked?1:0,callback)
-      setisDisabled(!checked);
+      
+     await  window.writeTag(tagName,checked?1:0,callback);
+       setisDisabled(!checked);
       setdisableAcept(false); //set cho switch Acept
       // setisAllowReading(true);
   }
-  useEffect(() => {
-    // alert('re-render');
-    //  const timer= setInterval(() => {
-          // console.log(window.tags);
-          var tag = window.tags && window.tags.find(tag => tag.Name == tagName);
-          //  console.log(tag)
-          if (tag && isAllowReading) {
-            setacept(tag.Value=="1"?true:false);
-            setisDisabled(tag.Value=="1"?false:true);
+  const getTagValue = async () => {
+    let keys = Object.keys(tagList);
+    // console.log(keys);
+    keys.forEach(async (key) => {
+      let tagName = key;
+      let tagPath = tagList[key];
+      let tag = tags.find((t) => t.Path == tagPath);
+      if (typeof tag !== "undefined" && tag !== null) {
+        let tagValue = await tag.Properties.Value;
+
+        if (tagValue) {
+          switch (tagName) {
+            case tagListProp.Accept:
+              setAccept(tagValue == "1");
+              setisDisabled(tagValue == "0")
+              break;
+            case tagListProp.PL_Auto:
+              setPL_Auto(tagValue == "1");
+              break;
+            case tagListProp.PL_Manual:
+              setPL_Manual(tagValue == "1");
+              break;
+            case tagListProp.PL_FW_MN:
+              setPL_FW_MN(tagValue == "1");
+              break;
+            case tagListProp.PL_RV_MN:
+              setPL_RV_MN(tagValue == "1");
+              break;
+            case tagListProp.PL_Btai:
+              setPL_Btai(tagValue == "1");
+              break;
+            case tagListProp.PL_BTT:
+              setPL_BTT(tagValue == "1");
+              break;
+            case tagListProp.PL_Qhut:
+              setPL_Qhut(tagValue == "1");
+              break;
+            case tagListProp.PL_OVL_MN:
+              setPL_OVL_MN(tagValue == "1");
+              break;
+            case tagListProp.PL_OVL_Btai:
+              setPL_OVL_Btai(tagValue == "1");
+              break;
+            case tagListProp.PL_OVL_Qhut:
+              setPL_OVL_Qhut(tagValue == "1");
+              break;
+            case tagListProp.PL_OVL_BTT:
+              setPL_OVL_BTT(tagValue == "1");
+              break;
+            case tagListProp.Alarm_HT:
+              setAlarm_HT(tagValue == "1");
+              break;
+              case tagListProp.Resuft_Hz_BT1:
+               setResult_Hz_BT1(tagValue);
+              break;
+              case tagListProp.Current_Digital_MN:
+               setCurrent_Digital_MN(tagValue);
+              break;
+              case tagListProp.Current_Digital_QH1:
+               setCurrent_Digital_QH1(tagValue);
+              break;
+              case tagListProp.BT_Start_FW_MN:
+               setBT_Start_FW_MN(tagValue == '1');
+              break;
+              case tagListProp.BT_Start_RV_MN:
+               setBT_Start_RV_MN(tagValue == '1');
+              break;
+              case tagListProp.BT_Start_FW_MN:
+               setBT_Start_FW_MN(tagValue == '1');
+              break;
+              case tagListProp.BT_Start_Btai:
+               setBT_Start_Btai(tagValue == '1');
+              break;
+              case tagListProp.BT_Start_Qhut:
+               setBT_Start_Qhut(tagValue == '1');
+              break;
+              case tagListProp.BT_Stop_Btai:
+               setBT_Stop_Btai(tagValue == '1');
+              break;
+              case tagListProp.BT_Stop_MN:
+               setBT_Stop_MN(tagValue == '1');
+              break;
+              case tagListProp.BT_Stop_Qhut:
+               setBT_Stop_Qhut(tagValue == '1');
+              break;
+              case tagListProp.BT_In_Hz_BT:
+               setBT_In_Hz_BT(tagValue == '1');
+              break;
+            default:
+              // setResult_Hz_BT1(tagValue);
+              break;
           }
-      // }, 100);
+
+          // tagObj[tagName] = tagValue;
+          // Object.assign(tagObj, tagObj);
+          // await setNTho1Tags(tagObj);
+          // await setNTho1Tags(prev=>({...prev,tagObj}));
+        }
+        // console.log(tagObj);
+        // alert(tagObj)
+      }
+    });
+    //  await setNTho1Tags(prev=>({...prev,tagObj}));
+    // await setNTho1Tags(tagObj);
+   
+
+    // console.log(tagObj);
+    // console.log(tagObj);
+    // //  console.log(tag&& tag.Value);
+    //
+  };
+  useEffect(() => {
+    getTagValue()
     return () => {
       // clearInterval(timer)
     }
@@ -253,13 +385,11 @@ export default function ControlPanel_MayNghien(props) {
            
             control={
               <Switch
-                checked={acept}
+                checked={Accept}
                 onChange={handleAceptChange}
                 name="switchAccept"
                 color="secondary"
-                aria-checked = {acept}
-                arial-label={tagName}
-                 disabled={disableAcept}
+                disabled={disableAcept}
                 //  inputProps={{
                 //    'arial-checked':acept.toString()
                 //  }}
@@ -304,273 +434,276 @@ export default function ControlPanel_MayNghien(props) {
     </div>
   );
 }
-const Panel = (props) => {
-  const {isDisabled,handleCloseNotify,notify} = props;
-  const {open,message,status} = notify;
-  const classes = useStyles();
-  
-  return (
-    <>
-    <Grid item xs={12} sm={12} md={12} className={classes.gridContainer}>
-      <Card className={classes.card}>
-        <CardHeader
-          action={
-            <FormControlLabel
-              label="Auto"
-              control={
-                <Switch
-                  // checked={state.checkedB}
-                  // onChange={handleChange}
-                  name="switchAuto_Man"
-                  color="secondary"
-                  disabled={isDisabled}
-                />
-              }
-            />
-          }
-          title="MÁY NGHIỀN"
-          classes={{
-            root: classes.cardRoot,
-            action: classes.cardAction,
-            title: classes.cardTitle,
-          }}
-        />
-        <CardContent>
-          <CardMedia className={classes.cardMedia}>
-            <FormControlLabel
-              disabled={isDisabled}
-              control={
-                <IconButton>
-                  <LoopIcon
-                    color="disabled"
-                    className={classes.forwardIcon}
-                  ></LoopIcon>
-                </IconButton>
-              }
-              label="Chạy nghịch"
-              labelPlacement="bottom"
-            ></FormControlLabel>
-            <FormControlLabel
-              control={
-                <IconButton disabled={isDisabled}>
-                  <AutorenewIcon
-                    className={classes.forwardIcon}
-                  ></AutorenewIcon>
-                </IconButton>
-              }
-              label="Chạy thuận"
-              labelPlacement="bottom"
-            ></FormControlLabel>
-          </CardMedia>
-          <Box mt={2} mb={2}></Box>
-          {/* <CardActions> */}
-
-          <Grid
-            container
-            spacing={1}
-            direction="row"
-            justify="center"
-            alignItems="center"
-            alignContent="center"
-            wrap="nowrap"
-          >
-            <Grid item xs={12} style={{ textAlign: "center" }}>
-              <Input
-                id="standard-adornment-weight"
-                //   value={values.weight}
-                //   onChange={handleChange("weight")}
-                endAdornment={
-                  <InputAdornment position="end">Hz</InputAdornment>
+const Panel = React.memo(
+  (props) => {
+    const {isDisabled,handleCloseNotify,notify} = props;
+    const {open,message,status} = notify;
+    const classes = useStyles();
+    
+    return (
+      <>
+      <Grid item xs={12} sm={12} md={12} className={classes.gridContainer}>
+        <Card className={classes.card}>
+          <CardHeader
+            action={
+              <FormControlLabel
+                label="Auto"
+                control={
+                  <Switch
+                    // checked={state.checkedB}
+                    // onChange={handleChange}
+                    name="switchAuto_Man"
+                    color="secondary"
+                    disabled={isDisabled}
+                  />
                 }
-                aria-describedby="standard-weight-helper-text"
-                inputProps={{
-                  "aria-label": "weight",
-                    min: 0,
-                    style: { textAlign: 'center' }
-                }}
-                type="number"
-                required={true}
-                color="secondary"
               />
-            </Grid>
-            <Grid item xs={12} style={{ textAlign: "center" }}>
-              <Button
-              disabled = {isDisabled}
-                color="primary"
-                variant="contained"
-                onClick={() => alert("a")}
-              >
-                OK
-              </Button>
-            </Grid>
-          </Grid>
-          {/* </CardActions> */}
-        </CardContent>
-        <CardContent>
-          <Grid
-            container
-            spacing={2}
-            direction="row"
-            justify="center"
-            alignItems="center"
-            // alignContent="center"
-          >
+            }
+            title="MÁY NGHIỀN"
+            classes={{
+              root: classes.cardRoot,
+              action: classes.cardAction,
+              title: classes.cardTitle,
+            }}
+          />
+          <CardContent>
+            <CardMedia className={classes.cardMedia}>
+              <FormControlLabel
+                disabled={isDisabled}
+                control={
+                  <IconButton>
+                    <LoopIcon
+                      color="disabled"
+                      className={classes.forwardIcon}
+                    ></LoopIcon>
+                  </IconButton>
+                }
+                label="Chạy nghịch"
+                labelPlacement="bottom"
+              ></FormControlLabel>
+              <FormControlLabel
+                control={
+                  <IconButton disabled={isDisabled}>
+                    <AutorenewIcon
+                      className={classes.forwardIcon}
+                    ></AutorenewIcon>
+                  </IconButton>
+                }
+                label="Chạy thuận"
+                labelPlacement="bottom"
+              ></FormControlLabel>
+            </CardMedia>
+            <Box mt={2} mb={2}></Box>
+            {/* <CardActions> */}
+  
             <Grid
-              item
-              xs={12}
-              sm={6}
+              container
+              spacing={1}
+              direction="row"
+              justify="center"
+              alignItems="center"
+              alignContent="center"
+              wrap="nowrap"
+            >
+              <Grid item xs={12} style={{ textAlign: "center" }}>
+                <Input
+                  id="standard-adornment-weight"
+                  //   value={values.weight}
+                  //   onChange={handleChange("weight")}
+                  endAdornment={
+                    <InputAdornment position="end">Hz</InputAdornment>
+                  }
+                  aria-describedby="standard-weight-helper-text"
+                  inputProps={{
+                    "aria-label": "weight",
+                      min: 0,
+                      style: { textAlign: 'center' }
+                  }}
+                  type="number"
+                  required={true}
+                  color="secondary"
+                />
+              </Grid>
+              <Grid item xs={12} style={{ textAlign: "center" }}>
+                <Button
+                disabled = {isDisabled}
+                  color="primary"
+                  variant="contained"
+                  onClick={() => alert("a")}
+                >
+                  OK
+                </Button>
+              </Grid>
+            </Grid>
+            {/* </CardActions> */}
+          </CardContent>
+          <CardContent>
+            <Grid
+              container
+              spacing={2}
+              direction="row"
+              justify="center"
+              alignItems="center"
+              // alignContent="center"
+            >
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  disabled={isDisabled}
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    height: 50,
+                    width:400
+                  }}
+                >
+                  Bật quạt hút
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}
               style={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-              }}
-            >
-              <Button
-                disabled={isDisabled}
-                variant="contained"
-                color="primary"
-                style={{
-                  height: 50,
-                  width:400
-                }}
-              >
-                Bật quạt hút
-              </Button>
+              }}>
+                <Button
+                  disabled={isDisabled}
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    height: 50,
+                    width:400
+                   
+                  }}
+                >
+                  Tắt quạt hút
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-              <Button
-                disabled={isDisabled}
-                variant="contained"
-                color="primary"
-                style={{
-                  height: 50,
-                  width:400
-                 
-                }}
-              >
-                Tắt quạt hút
-              </Button>
-            </Grid>
-          </Grid>
-          <Box mt={1}></Box>
-          <Grid
-            container
-            spacing={2}
-            direction="row"
-            justify="center"
-            alignItems="center"
-            // alignContent="center"
-          >
+            <Box mt={1}></Box>
             <Grid
-              item
-              xs={12}
-              sm={6}
+              container
+              spacing={2}
+              direction="row"
+              justify="center"
+              alignItems="center"
+              // alignContent="center"
+            >
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  disabled={isDisabled}
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    height: 50,
+                    width:400
+                  }}
+                >
+                  Bật băng tải
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}
               style={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-              }}
-            >
-              <Button
-                disabled={isDisabled}
-                variant="contained"
-                color="primary"
-                style={{
-                  height: 50,
-                  width:400
-                }}
-              >
-                Bật băng tải
-              </Button>
+              }}>
+                <Button
+                  disabled={isDisabled}
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    height: 50,
+                    width:400
+                   
+                  }}
+                >
+                  Tắt băng tải
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-              <Button
-                disabled={isDisabled}
-                variant="contained"
-                color="primary"
-                style={{
-                  height: 50,
-                  width:400
-                 
-                }}
-              >
-                Tắt băng tải
-              </Button>
-            </Grid>
-          </Grid>
-          <Box mt={1}></Box>
-          <Grid
-            container
-            spacing={2}
-            direction="row"
-            justify="center"
-            alignItems="center"
-            // alignContent="center"
-          >
+            <Box mt={1}></Box>
             <Grid
-              item
-              xs={12}
-              sm={6}
+              container
+              spacing={2}
+              direction="row"
+              justify="center"
+              alignItems="center"
+              // alignContent="center"
+            >
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  disabled={isDisabled}
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    height: 50,
+                    width:400
+                  }}
+                >
+                  Tắt máy
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}
               style={{
+                
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-              }}
-            >
-              <Button
-                disabled={isDisabled}
-                variant="contained"
-                color="primary"
-                style={{
-                  height: 50,
-                  width:400
-                }}
-              >
-                Tắt máy
-              </Button>
+              }}>
+                <Button
+                  disabled={isDisabled}
+                  variant="contained"
+                  color="secondary"
+                  style={{
+                    height: 50,
+                    width:400
+                  }}
+                >
+                  Reset Alarm
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}
-            style={{
-              
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-              <Button
-                disabled={isDisabled}
-                variant="contained"
-                color="secondary"
-                style={{
-                  height: 50,
-                  width:400
-                }}
-              >
-                Reset Alarm
-              </Button>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-    </Grid>
-    <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseNotify} anchorOrigin={{horizontal:'center',vertical:'bottom'}}>
-        <Alert onClose={handleCloseNotify} severity={status}>
-          {message}
-        </Alert>
-      </Snackbar>
-    </>
-  );
-};
+          </CardContent>
+        </Card>
+      </Grid>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseNotify} anchorOrigin={{horizontal:'center',vertical:'bottom'}}>
+          <Alert onClose={handleCloseNotify} severity={status}>
+            {message}
+          </Alert>
+        </Snackbar>
+      </>
+    );
+  }
+)
 ControlPanel_MayNghien.propTypes = {
   isOpen: PropTypes.bool,
   handleClose: PropTypes.func,
 };
+export default React.memo(ControlPanel_MayNghien);

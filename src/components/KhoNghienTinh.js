@@ -27,13 +27,17 @@ import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import LoopIcon from "@material-ui/icons/Loop";
 import AutorenewIcon from "@material-ui/icons/Autorenew";
 
-import ControlPanel_KhoNTho_Sausay from "./ControlPanel_KhoNTho_Sausay";
+import ControlPanel_KhoNTho_Sausay from "./ControlPanel_KhoNTinh";
 import VTaiOn from "../assets/images/Vittai_On.svg";
 import VTaiOff from "../assets/images/Vittai_Off.svg";
 import BDauOn from "../assets/images/Pump_On.svg";
 import BDauOff from "../assets/images/Pump_Off.svg";
 import VTFull_Off from "../assets/images/Vittai_Full_Off.svg";
 import VTFull_On from "../assets/images/Vittai_Full_On.svg";
+import Airlock_On from "../assets/images/Airlock_On.svg";
+import Airlock_Off from "../assets/images/Airlock_Off.svg";
+import ControlPanel_KhoNTinh from "./ControlPanel_KhoNTinh";
+// import VTFull_On from "../assets/images/Vittai_Full_On.svg";
 
 const useStyles = makeStyles((theme) => ({
   card_root: {
@@ -120,7 +124,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 10,
   },
 }));
-function KhoNghienTho_Sausay(props) {
+function KhoNghienTinh(props) {
   const handleOpenCtrPanel = (e) => {
     setisOpen(true);
   };
@@ -305,8 +309,8 @@ function KhoNghienTho_Sausay(props) {
                     </div>
                   </div>
                 </Grid>
-                <Grid item xs={6} style={{ marginBottom: 20 }}>
-                  <div style={{ textAlign: "center" }}>
+                <Grid item xs={6} style={{ marginBottom: 20,display:'none' }}>
+                  <div style={{ textAlign: "center" }} >
                     <Typography variant="h5" color="initial">
                       XY LANH 3
                     </Typography>
@@ -344,7 +348,7 @@ function KhoNghienTho_Sausay(props) {
                     </div>
                   </div>
                 </Grid>
-                <Grid item xs={6} style={{ marginBottom: 20 }}>
+                <Grid item xs={6} style={{ marginBottom: 20 ,display:'none'}}>
                   <div style={{ textAlign: "center" }}>
                     <Typography variant="h5" color="initial">
                       XY LANH 4
@@ -398,7 +402,7 @@ function KhoNghienTho_Sausay(props) {
                 >
                   <div style={{ textAlign: "center", marginBottom: 10 }}>
                     <Typography variant="h5" color="initial">
-                      VÍT TẢI CẤP LIỆU 1
+                      VÍT TẢI CẤP LIỆU 
                     </Typography>
                   </div>
                   <div style={{ textAlign: "center", float: "left" }}>
@@ -430,9 +434,20 @@ function KhoNghienTho_Sausay(props) {
                         Thuận
                       </Typography>
                     </div>
+                    
+                  </div>
+                  <div style={{ textAlign: "center" }}>
+                    {/* <LoopIcon className={classes.xylanh_icon_Back}></LoopIcon>
+                     */}
+                    <img width={100} src={VTFull_Off} alt="" />
+                  </div>
+                  <div style={{ textAlign: "center", marginBottom: 10 }}>
+                    <Typography variant="h5" color="initial">
+                      Báo đầy
+                    </Typography>
                   </div>
                 </Grid>
-                <Grid item xs={6} style={{ marginBottom: 20, marginTop: 10 }}>
+                {/* <Grid item xs={6} style={{ marginBottom: 20, marginTop: 10 }}>
                   <div style={{ textAlign: "center", marginBottom: 10 }}>
                     <Typography variant="h5" color="initial">
                       VÍT TẢI CẤP LIỆU 2
@@ -468,33 +483,9 @@ function KhoNghienTho_Sausay(props) {
                       </Typography>
                     </div>
                   </div>
-                </Grid>
-                <Grid item xs={6} style={{ marginBottom: 20, marginTop: 0 }}>
-                
-                  <div style={{ textAlign: "center" }}>
-                    {/* <LoopIcon className={classes.xylanh_icon_Back}></LoopIcon>
-                     */}
-                    <img width={100} src={VTFull_Off} alt="" />
-                  </div>
-                  <div style={{ textAlign: "center", marginBottom: 10 }}>
-                    <Typography variant="h5" color="initial">
-                      Báo đầy
-                    </Typography>
-                  </div>
-                </Grid>
-                <Grid item xs={6} style={{ marginBottom: 20, marginTop: 0 }}>
-                 
-                  <div style={{ textAlign: "center" }}>
-                    {/* <LoopIcon className={classes.xylanh_icon_Back}></LoopIcon>
-                     */}
-                    <img width={100} src={VTFull_Off} alt="" />
-                  </div>
-                  <div style={{ textAlign: "center", marginBottom: 10 }}>
-                    <Typography variant="h5" color="initial">
-                      Báo đầy
-                    </Typography>
-                  </div>
-                </Grid>
+                </Grid> */}
+               
+               
 
                 <Grid item xs={12} style={{ marginBottom: 20, marginTop: 0 }}>
                   <div style={{ textAlign: "center", marginBottom: 10 }}>
@@ -559,7 +550,7 @@ function KhoNghienTho_Sausay(props) {
                 wrap="wrap"
                 style={{ background: "#555", marginTop: 10 }}
               >
-                <Grid item xs={6} style={{ marginBottom: 20 }}>
+                <Grid item xs={4} style={{ marginBottom: 20 }}>
                   <div
                     style={{
                       textAlign: "center",
@@ -568,7 +559,7 @@ function KhoNghienTho_Sausay(props) {
                     }}
                   >
                     <Typography variant="h5" color="initial">
-                      CYLONE 1
+                      CYLONE 
                     </Typography>
                   </div>
                   <div style={{ textAlign: "center" }}>
@@ -592,7 +583,7 @@ function KhoNghienTho_Sausay(props) {
                     </div>
                   </div>
                 </Grid>
-                <Grid item xs={6} style={{ marginBottom: 20 }}>
+                <Grid item xs={4} style={{ marginBottom: 20 }}>
                   <div
                     style={{
                       textAlign: "center",
@@ -601,48 +592,7 @@ function KhoNghienTho_Sausay(props) {
                     }}
                   >
                     <Typography variant="h5" color="initial">
-                      CYLONE 2
-                    </Typography>
-                  </div>
-                  <div style={{ textAlign: "center" }}>
-                 
-                    <div>
-                      {/* <LoopIcon className={classes.xylanh_icon_Back}></LoopIcon> */}
-                      <img
-                        src={VTFull_Off}
-                        width={100}
-                        className={classes.xylanh_icon_Forward}
-                      ></img>
-                    </div>
-                    <div>
-                      <Typography
-                        variant="h5"
-                        color="initial"
-                        style={{ marginRight: 0 }}
-                      >
-                        Báo đầy
-                      </Typography>
-                    </div>
-                  </div>
-                </Grid>
-              </Grid>
-              <Grid
-                container
-                justify="center"
-                alignItems="center"
-                wrap="wrap"
-                style={{ background: "#555", marginTop: 10 }}
-              >
-                <Grid item xs={6} style={{ marginBottom: 20 }}>
-                  <div
-                    style={{
-                      textAlign: "center",
-                      marginBottom: 10,
-                      marginTop: 10,
-                    }}
-                  >
-                    <Typography variant="h5" color="initial">
-                      BƠM DẦU 1
+                      BƠM DẦU
                     </Typography>
                   </div>
                   <div style={{ textAlign: "center" }}>
@@ -653,7 +603,7 @@ function KhoNghienTho_Sausay(props) {
                     </div>
                   </div>
                 </Grid>
-                <Grid item xs={6} style={{ marginBottom: 20 }}>
+                <Grid item xs={4} style={{ marginBottom: 20 }}>
                   <div
                     style={{
                       textAlign: "center",
@@ -662,30 +612,31 @@ function KhoNghienTho_Sausay(props) {
                     }}
                   >
                     <Typography variant="h5" color="initial">
-                      BƠM DẦU 2
+                      AIRLOCK
                     </Typography>
                   </div>
                   <div style={{ textAlign: "center" }}>
                    
                     <div>
                       {/* <LoopIcon className={classes.xylanh_icon_Back}></LoopIcon> */}
-                      <img src={BDauOff}></img>
+                      <img src={Airlock_On}></img>
                     </div>
                   </div>
                 </Grid>
               </Grid>
+              
             </Grid>
           </CardActionArea>
           <Box m={1}></Box>
         </CardContent>
       </Card>
-      <ControlPanel_KhoNTho_Sausay
+      <ControlPanel_KhoNTinh
         isOpen={isOpen}
         handleClose={handleClose}
         id={id}
-      ></ControlPanel_KhoNTho_Sausay>
+      ></ControlPanel_KhoNTinh>
     </>
   );
 }
 
-export default KhoNghienTho_Sausay;
+export default KhoNghienTinh;

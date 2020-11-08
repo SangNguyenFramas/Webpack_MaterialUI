@@ -140,7 +140,7 @@ const useStyles = makeStyles((theme) => ({
 
   // }
 }));
-export default function ControlPanel_KhoNTho_Sausay(props) {
+export default function ControlPanel_KhoNTinh(props) {
   const classes = useStyles();
   const { isOpen, handleClose, tagName } = props;
   const [isDisabled, setisDisabled] = useState(true);
@@ -397,51 +397,13 @@ const Panel = (props) => {
               ></FormControlLabel>
                 </Grid>
                 <Box m={1}></Box>
-                  <Grid item xs={12} sm={12} className = {classes.gridItemCenter}>
-                    <Typography variant="h5" color="default">VÍT TẢI CẤP LIỆU 2</Typography>
-                  </Grid>
-                  <Grid item xs={6} sm={6} className = {classes.gridItemCenter}>
-                <FormControlLabel
-                disabled={isDisabled}
-                control={
-                  <IconButton>
-                    <LoopIcon
-                      color="disabled"
-                      className={classes.forwardIcon}
-                    ></LoopIcon>
-                  </IconButton>
-                }
-                label="Chạy nghịch"
-                labelPlacement="bottom"
-              ></FormControlLabel>
-                </Grid>
-                <Grid item xs={6} sm={6} className = {classes.gridItemCenter}>
-                <FormControlLabel
-                control={
-                  <IconButton disabled={isDisabled}>
-                    <AutorenewIcon
-                      className={classes.forwardIcon}
-                    ></AutorenewIcon>
-                  </IconButton>
-                }
-                label="Chạy thuận"
-                labelPlacement="bottom"
-              ></FormControlLabel>
-                </Grid>
-                
-              
-                
-                
-               
+                  
+            
               </Grid>
               
               
             </CardMedia>
-            <Box mt={1} mb={1}></Box>
-            {/* <CardActions> */}
-
-           
-            {/* </CardActions> */}
+          
           </CardContent>
           <CardContent>
             <Grid
@@ -565,118 +527,9 @@ const Panel = (props) => {
                   Tiến
                 </Button>
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                XY LANH 3
-              </Grid>
-              <Grid
-                item
-                xs={6}
-                sm={6}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  disabled={isDisabled}
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    height: 50,
-                    width: 400,
-                  }}
-                >
-                  Lùi
-                </Button>
-              </Grid>
-              <Grid
-                item
-                xs={6}
-                sm={6}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  disabled={isDisabled}
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    height: 50,
-                    width: 400,
-                  }}
-                >
-                  Tiến
-                </Button>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                XY LANH 4
-              </Grid>
-              <Grid
-                item
-                xs={6}
-                sm={6}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  disabled={isDisabled}
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    height: 50,
-                    width: 400,
-                  }}
-                >
-                  Lùi
-                </Button>
-              </Grid>
-              <Grid
-                item
-                xs={6}
-                sm={6}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  disabled={isDisabled}
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    height: 50,
-                    width: 400,
-                  }}
-                >
-                  Tiến
-                </Button>
-              </Grid>
+             
+             
+             
             </Grid>
 
 
@@ -708,31 +561,10 @@ const Panel = (props) => {
                     width: 400,
                   }}
                 >
-                  Bật Bơm dầu 1
+                  Bật Bơm dầu 
                 </Button>
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  disabled={isDisabled}
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    height: 50,
-                    width: 400,
-                  }}
-                >
-                  Bật bơm dầu 2
-                </Button>
-              </Grid>
+              
             </Grid>
             <Box mt={1}></Box>
             <Grid
@@ -765,28 +597,7 @@ const Panel = (props) => {
                   Bật Vít tải ra liệu
                 </Button>
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Button
-                  disabled={isDisabled}
-                  variant="contained"
-                  color="secondary"
-                  style={{
-                    height: 50,
-                    width: 400,
-                  }}
-                >
-                  Reset Alarm
-                </Button>
-              </Grid>
+              
             </Grid>
           </CardContent>
         </Card>
@@ -804,7 +615,7 @@ const Panel = (props) => {
     </>
   );
 };
-ControlPanel_KhoNTho_Sausay.propTypes = {
+ControlPanel_KhoNTinh.propTypes = {
   isOpen: PropTypes.bool,
   handleClose: PropTypes.func,
 };
