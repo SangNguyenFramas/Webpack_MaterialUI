@@ -1,0 +1,28 @@
+import axios from "axios";
+import queryString from "query-string";
+const instance = axios.create({
+  baseURL: 'https://localhost:44353/api/value' ,
+  headers: {
+    "Content-Type": "application/json",
+    'Access-Control-Allow-Origin':'*',
+    'Access-Control-Allow-Headers':'*',
+    'Access-Control-Allow-Methods':'GET, POST, PUT, DELETE, OPTIONS'
+  },
+  paramsSerializer: (params) => queryString.stringify(params),
+});
+
+instance.interceptors.request.use(async (config) => {
+  return config;
+});
+instance.interceptors.response.use(
+  (response) => {
+    if (response && response.data) {
+      return response.data;
+    }
+    return response;
+  },
+  (error) => {
+    throw error;
+  }
+);
+export default instance;

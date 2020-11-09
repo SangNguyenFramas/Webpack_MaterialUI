@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -13,7 +13,8 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from '../../components/Page';
-
+import {UserApi} from '../../services/userApi'
+import { assign } from 'lodash';
 const useStyles = makeStyles((theme) => ({
   root: {
     //  backgroundColor: 'glue',
@@ -56,9 +57,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LoginView = () => {
+  
   const classes = useStyles();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    
+   
+  }, [])
   return (
     <Page
       className={classes.root}
@@ -73,18 +79,26 @@ const LoginView = () => {
         <Container maxWidth="sm" className={classes.content}>
           <Formik
             initialValues={{
-              email: 'demo@123.io',
-              password: 'Password123'
+              userName: 'admin',
+              password: 'admin'
             }}
             validationSchema={Yup.object().shape({
-              email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+              userName: Yup.string().max(255).required('UserName is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={(values) => {
-              console.log(values);
-              localStorage.setItem('userInfo',JSON.stringify(values))
+            onSubmit={async(values) => {
+              let params = {
+                userName:values.userName,
+                password:values.password
+              }
+              try {
+                const res = await UserApi.Login(params);
+                localStorage.setItem('userInfo',JSON.stringify(res))
+                console.log(res);
+              } catch (err) {
+                console.log('Đăng nhập thất bại!',err);
+              }
               navigate('/app/dashboard', { replace: true });
-             
             }}
             handleChange={e=>{
                 alert(e);
@@ -118,16 +132,16 @@ const LoginView = () => {
                  
                 </Box>
                 <TextField
-                  error={Boolean(touched.email && errors.email)}
+                  error={Boolean(touched.userName && errors.userName)}
                   fullWidth
-                  helperText={touched.email && errors.email}
-                  label="Email Address"
+                  helperText={touched.userName && errors.userName}
+                  label="User Name"
                   margin="normal"
-                  name="email"
+                  name="userName"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  type="email"
-                  value={values.email}
+                  type="text"
+                  value={values.userName}
                   variant="outlined"
                   // color='secondary'
                   className={classes.textRoot}
