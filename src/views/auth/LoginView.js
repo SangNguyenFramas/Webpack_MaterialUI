@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+
 import {
   Box,
   Button,
@@ -10,11 +11,13 @@ import {
   Link,
   TextField,
   Typography,
-  makeStyles
+  makeStyles,
+  Snackbar
 } from '@material-ui/core';
 import Page from '../../components/Page';
 import {UserApi} from '../../services/userApi'
 import { assign } from 'lodash';
+import { Alert } from '@material-ui/lab';
 const useStyles = makeStyles((theme) => ({
   root: {
     //  backgroundColor: 'glue',
@@ -60,7 +63,15 @@ const LoginView = () => {
   
   const classes = useStyles();
   const navigate = useNavigate();
+const [open, setopen] = useState(false)
 
+
+const handleCloseNotify = (event, reason) => {
+  if (reason === 'clickaway') {
+    return;
+  }
+  setopen(false)
+};
   useEffect(() => {
     
    
@@ -86,19 +97,34 @@ const LoginView = () => {
               userName: Yup.string().max(255).required('UserName is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={async(values) => {
+            onSubmit={(values) => {
               let params = {
                 userName:values.userName,
                 password:values.password
               }
               try {
-                const res = await UserApi.Login(params);
-                localStorage.setItem('userInfo',JSON.stringify(res))
+                const login = async()=>{
+                   const res =await  UserApi.Login(params);
+                   if (!res) {
+                    setopen(true);
+                    return res;
+                   }
+                   else 
+                   {
+                    localStorage.setItem('userInfo',JSON.stringify(res))
+                    navigate('/app/dashboard', { replace: true });
+                   }
+                }
+                const res =  login();
                 console.log(res);
+               
+              
               } catch (err) {
+                alert(err)
+                setopen(true)
                 console.log('Đăng nhập thất bại!',err);
               }
-              navigate('/app/dashboard', { replace: true });
+             
             }}
             handleChange={e=>{
                 alert(e);
@@ -132,7 +158,7 @@ const LoginView = () => {
                  
                 </Box>
                 <TextField
-                  error={Boolean(touched.userName && errors.userName)}
+                  // error={Boolean(touched.userName && errors.userName)}
                   fullWidth
                   helperText={touched.userName && errors.userName}
                   label="User Name"
@@ -147,7 +173,7 @@ const LoginView = () => {
                   className={classes.textRoot}
                 />
                 <TextField
-                  error={Boolean(touched.password && errors.password)}
+                  //error={Boolean(touched.password && errors.password)}
                   fullWidth
                   helperText={touched.password && errors.password}
                   label="Password"
@@ -163,7 +189,7 @@ const LoginView = () => {
                 <Box my={2} p={3}>
                   <Button
                     color="primary"
-                    disabled={isSubmitting}
+                    // disabled={isSubmitting}
                     fullWidth
                     size="large"
                     type="submit"
@@ -176,6 +202,12 @@ const LoginView = () => {
               </form>
             )}
           </Formik>
+        
+          <Snackbar open={open} autoHideDuration={3000} onClose={handleCloseNotify} anchorOrigin={{horizontal:'center',vertical:'bottom'}}>
+          <Alert severity='warning' onClose={handleCloseNotify} >
+            Đăng nhập thất bại!
+          </Alert>
+        </Snackbar>
         </Container>
       </Box>
     </Page>
