@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Workbook } from 'exceljs';
 import saveAs from 'file-saver';
 import moment from 'moment'
+import SMaterialTable from '../../components/SMaterialTable';
 const ReportView = props => {
 
     let headers = [{
@@ -59,8 +60,9 @@ const ReportView = props => {
     }
     
     return (
-        <div style={{top:100,position:'relative'}}>
+        <div style={{width:'85vw',overflow:'auto',marginTop:50}}>
              <button onClick={handleClick}>Export Excel</button>
+             <SMaterialTable></SMaterialTable>
         </div>
     )
 }

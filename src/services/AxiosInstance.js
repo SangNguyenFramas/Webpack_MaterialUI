@@ -17,10 +17,8 @@ instance.interceptors.request.use(async (config) => {
 instance.interceptors.response.use(
   (response) => {
     if (response && response.data) {
-        alert('resone')
       return response.data;
     }
-    alert(response)
     return response;
   },
   (error) => {

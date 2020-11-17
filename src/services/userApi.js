@@ -1,8 +1,8 @@
 import instance from "./AxiosInstance";
 
 export const UserApi={
-    Login :(params)=>{
+    Login :async(params)=>{
         const url ='/Login';
-        return instance.get(`${url}/${params.userName}/${params.password}`)
+        return await instance.get(`${url}/${params.userName}/${params.password}`)
     }
 }

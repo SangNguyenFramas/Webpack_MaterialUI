@@ -15,7 +15,6 @@ import {
   useRecoilValue,
 } from "recoil";
 import { readTagFile } from "./utils/ReadTagFile";
-
 const App = () => {
   const [tags, setTags] = useRecoilState(tagsState);
   const [tagsFile, setTagsFile] = useRecoilState(tagsFileState);
@@ -64,6 +63,7 @@ const App = () => {
 
       <GlobalStyles />
       {routing}
+     
     </ThemeProvider>
   );
 };
