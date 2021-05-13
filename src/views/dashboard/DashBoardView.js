@@ -6,9 +6,10 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
-import {Card, CardActions, CardContent, CardHeader, Grid,Box} from '@material-ui/core';
+import { Card, CardActions, CardContent, CardHeader, Grid, Box ,Container} from '@material-ui/core';
 import SCard from '../../components/SCard';
-import { entries } from 'lodash';
+import Maynghien from '../../components/Maynghien';
+import Page from '../../components/Page';
 
 
 function TabPanel(props) {
@@ -24,7 +25,7 @@ function TabPanel(props) {
       className={classes.tabpanel}
     >
       {value === index && (
-        < Grid spacing={1} container  justify='flex-start'>
+        < Grid spacing={3} container >
           {children}
         </Grid>
       )}
@@ -42,38 +43,46 @@ TabPanel.propTypes = {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    
-     
-    // alignContent:'flex-end',
-    // justifyContent:'flex-end',
-    // justifyItems:'flex-end'
-    // overflow: 'hidden',
+  
     // position: 'fixed',
-    //  bottom: 0,
-    // marginTop:0,
-    // paddingTop:0
-    paddingTop:64,
-    marginTop:-55,
-    position:'fixed',
-    width:'100%',
-    [theme.breakpoints.up('lg')]:{
+    width: '100%',
+    [theme.breakpoints.up('lg')]: {
       width: 'calc(100% - 256px)',
     },
-    flexGrow: 1,
+    minHeight: '100vh',
+    // paddingBottom: theme.spacing(3),
+    // position:'relative'
+    // paddingTop: '-64px',
+    // flexGrow: 1,
   },
-  tabpanel:{
-    height:'100vh',
-    margin:'10px',
-    backgroundColor:'#444',
+  appbar:{
+    top:'4rem',
+    left:256,
+    position:'fixed',
+    [theme.breakpoints.down('md')]: {
+      left: 0,
+      top:'3rem',
+      paddingTop:0
+    },
+    // height:'100%'
+  },
+  tabpanel: {
     position:'relative',
-    display:'flex',
-    alignContent:'space-between',
-    color:'white'
-    // padding:'10px'
+    top:'5rem',
+    [theme.breakpoints.down('md')]: {
+      // position:'relative',
+      left: 0,
+      top:'3.5rem',
+     
+    },
+      height:'100vh',
+    // display:'flex',
+    // justifyContent:'space-between',
+    // alignItems:'space-between'
   }
 }));
 
-export default ()=> {
+export default () => {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -87,52 +96,66 @@ export default ()=> {
   };
 
   return (
-    <div className={classes.root}>
-      <AppBar position="relative" color="transparent" >
-        <Tabs 
+    <div >
+      <Page 
+        className={classes.root}
+        title="Dashboard"
+      >
+      <AppBar color='default' className={classes.appbar}>
+        <Tabs
           value={value}
           onChange={handleChange}
           indicatorColor="primary"
-          textColor="primary"
+          // textColor="primary"
           variant="scrollable"
-          scrollButtons="on"
+          scrollButtons="auto"
           aria-label="full width tabs example"
         >
-          <Tab label="Máy nghiền"  />
-          <Tab label="Kho nghiền thô - Sau sấy"  />
-          <Tab label="Kho nghiền tinh - Giũ bụi"  />
-          <Tab label="Máy ép"  />
+          <Tab label="Máy nghiền" />
+          <Tab label="Kho nghiền thô - Sau sấy" />
+          <Tab label="Kho nghiền tinh - Giũ bụi" />
+          <Tab label="Máy ép" />
         </Tabs>
       </AppBar>
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-        transitionDuration={
-          {
-            enter:5000,
-            exit:4000
-          }
-          
-        }
-      >
-        <TabPanel value={value} index={0}  >
-          <Grid item xs={12} sm={4} lg={4} >
-             <SCard Title='Máy nghiền tinh 1'>
-
-             </SCard>
+     
+        <TabPanel value={value} index={0}  className={classes.tabpanel}>
+        <Container maxWidth={false}>
+        <Grid
+          container
+          spacing={3}
+          justify='space-around'
+        >
+          <Grid
+            item
+            lg={4}
+            sm={6}
+            xl={4}
+            xs={12}
+          >
+            <Maynghien />
           </Grid>
-          <Grid item xs={12} sm={4} lg={4} >
-             <SCard Title='Máy nghiền tinh 2'>
-
-             </SCard>
+          <Grid
+            item
+            lg={4}
+            sm={6}
+            xl={4}
+            xs={12}
+          >
+            <Maynghien />
           </Grid>
-          <Grid item xs={12} sm={4} lg={4} >
-             <SCard Title='Máy nghiền thô 1'>
-
-             </SCard>
+          <Grid
+            item
+            lg={4}
+            sm={6}
+            xl={4}
+            xs={12}
+          >
+            <Maynghien />
           </Grid>
-          
+         
+        </Grid>
+      </Container>
+
         </TabPanel>
         <TabPanel value={value} index={1} >
           Item Two
@@ -143,7 +166,9 @@ export default ()=> {
         <TabPanel value={value} index={3} >
           Item Four
         </TabPanel>
-      </SwipeableViews>
+      
+      </Page>
+      
     </div>
   );
 }

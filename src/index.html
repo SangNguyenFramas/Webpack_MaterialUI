@@ -1,19 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webpack material UI</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bao Chau Controler</title>
+  </head>
+  <body>
+    <!-- <button id='btnWrite' style="z-index: 100;">Write</button> -->
     <div id="root"></div>
+
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/jquery.signalR-2.4.1.min.js"></script>
+    <!-- <script type="text/javascript">
+      function preventBack() {
+        window.history.pushState(null, null, window.location.href);
+        window.onpopstate = function (event) {
+          window.history.go(1);
+        };
+      }
+      window.addEventListener("load", preventBack());
+    </script> -->
     <script type="text/javascript">
-        function preventBack() {
-          window.history.pushState(null, null, window.location.href);
-          window.onpopstate = function (event) {
-            window.history.go(1);
-          };
+      //Reference to simpleHub proxy
+      let serverHubProxy;
+      let isConnected;
+      // let url = "http://localhost:1000/signalr";
+      let url = "http://baochauphuyen.ddns.net:8800/easyScada";
+      let svg;
+      let messagejson;
+      let station;
+      let channels = [];
+      let devices = [];
+      let tags = [];
+      let tag = null;
+      let isStarted = false;
+      //Write given text to log area
+
+      //Connect to the SignalR server and get the proxy for simpleHub
+      function connect() {
+        $.getScript(url + "/hubs", function () {
+          $.connection.hub.url = url;
+          // Declare a proxy to reference the hub.
+          // serverHubProxy = $.connection.serverHub;
+          serverHubProxy = $.connection.easyDriverServerHub;
+          //Reigster to the "AddMessage" callback method of the hub
+          //This method is invoked by the hub
+          // serverHubProxy.client.addMessage = function (name, message) {};
+
+          //Connect to hub
+          $.connection.hub
+            .start()
+            .done(async function () {
+              //  await getAllTagsAsync("Local Station/Channel1/Device1");
+              //  await getTagAsync(tags[0].Path)
+              // callback(tags);
+              // alert('done')
+              //  await getAllTagsAsync("RemoteStation1/PLCNghien_EpVien/GiuBuiEpVien");
+              window.isStarted =  true;
+              getAllElementsAsync();
+              // console.log(tags)
+              
+            })
+            .fail(function () {
+              alert("failed");
+              $.connection.hub.start();
+            });
+
+          ////////////////////////////
+          // $.connection.hub.stateChanged(function (change) {
+          //   if (change.newState === $.signalR.connectionState.reconnecting) {
+          //   } else if (
+          //     change.newState === $.signalR.connectionState.connected
+          //   ) {
+          //   } else if (
+          //     change.newState === $.signalR.connectionState.disconnected
+          //   ) {
+          //     setTimeout(function () {
+          //       $.connection.hub.start();
+          //       // alert("reconnect");
+          //     }, 5000); // Restart connection after 5 seconds.you can set the time based your requirement
+          //   }
+          // });
+          $.connection.hub.stateChanged(function (change) {
+            var Status = $("#status");
+            if (change.newState === $.signalR.connectionState.reconnecting) {
+              Status.css({ background: "yellow", color: "blue" });
+              Status.html("Reconnecting");
+            } else if (
+              change.newState === $.signalR.connectionState.connected
+            ) {
+              // var Status = $("#status");
+              Status.css({ background: "green", color: "white" });
+              Status.html("Connected");
+              // location.reload();
+            } else if (
+              change.newState === $.signalR.connectionState.disconnected
+            ) {
+              // var Status = $("#status");
+              window.isStarted = false;
+              Status.css({ background: "red", color: "white" });
+              Status.html("Disconneted");
+              setTimeout(function () {
+                $.connection.hub.start();
+                // alert("reconnect");
+              }, 5000); // Restart connection after 5 seconds.you can set the time based your requirement
+            }
+          });
+        });
+      }
+
+      //Disconnect from the server
+      function disconnect() {
+        if (serverHubProxy != null) {
+          $.connection.hub.stop().done(function () {
+            serverHubProxy = null;
+          });
         }
-      </script>
-</body>
+      }
+
+      //Send a message to server
+      async function getStation(pathToStation) {
+        if (serverHubProxy != null) {
+          await serverHubProxy.server
+            .getStation(pathToStation)
+            .done((value) => {
+              alert(value);
+            });
+        }
+      }
+      async function getAllChannelsAsync(pathToStation) {
+        if (serverHubProxy != null) {
+          await serverHubProxy.server
+            .getAllChannelsAsync(pathToStation)
+            .done((value) => {
+              //  console.log(JSON.parse(value));
+              //  channels = JSON.parse(value);
+              //  console.log(value);
+              //  channels.forEach(channel => {
+              //   await serverHubProxy.server
+              //       .getAllDevicesAsync(channel.pathToChannel)
+              //       .done(
+              //         value =>{
+              //           devices = JSON.parse(value);
+              //           devices.forEach(device => {
+              //             await serverHubProxy.server
+              //                 .getAllTagsAsync(device.pathToDevice)
+              //                 .done(
+              //                   value =>{
+              //                       tags = JSON.parse(value);
+              //                       console.log(tags);
+              //                   }
+              //                 )
+              //           });
+              //         }
+              //       )
+              //  });
+            });
+        }
+      }
+      async function getAllDevicesAsync(pathToChannel) {
+        if (serverHubProxy != null) {
+          await serverHubProxy.server
+            .getAllDevicesAsync(pathToChannel)
+            .done((value) => {
+              //  console.log(JSON.parse(value));
+              devices = JSON.parse(value);
+            });
+        }
+      }
+      async function getAllTagsAsync(pathToDevice) {
+        if (serverHubProxy != null) {
+          await serverHubProxy.server
+            .getAllTagsAsync(pathToDevice)
+            .done((value) => {
+              // console.log(JSON.parse(value));
+              // console.log(tags)
+              window.tags = JSON.parse(value);
+            });
+        }
+      }
+      async function getTagAsync(pathToTag, callback) {
+        //  console.log(pathToTag);
+        if (serverHubProxy != null) {
+          await serverHubProxy.server
+            .getTagAsync(pathToTag)
+            .done((value) => {
+              //  alert(value)
+              if (value != null) {
+                window.tag = JSON.parse(value);
+              }
+
+              let result = value.Value;
+              alert(result);
+              callback(result);
+            })
+            .fail((err) => {
+              alert(err);
+            });
+        }
+      }
+      function subsCribe(stationjson, communicationMode, refreshRate) {
+        if (serverHubProxy != null) {
+          serverHubProxy.server
+            .subsCribe(stationjson, communicationMode, refreshRate)
+            .done(console.log("a"));
+        }
+      }
+      function writeTag(Path, value) {
+        if (serverHubProxy != null) {
+          var WriteMode = {
+            WriteAllValue: 0,
+            WriteLatestValue: 1,
+          };
+          var WritePiority = {
+            Default: 0,
+            Medium: 1,
+            High: 2,
+            Highest: 3,
+          };
+          var today = new Date();
+          var dd = String(today.getDate()).padStart(2, "0");
+          var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+          var yyyy = today.getFullYear();
+
+          // today = mm + "/" + dd + "/" + yyyy;
+          var WriteCommand = {
+            PathToTag: Path,
+            Value: value,
+            SendTime: today,
+            WritePiority: WritePiority.Highest,
+            WriteMode: WriteMode.WriteLatestValue,
+          };
+
+          serverHubProxy.server
+            .writeTagValueAsync(WriteCommand)
+            .done((value) => {
+              //  console.log(JSON.stringify(value.WriteCommand));
+              console.log(value);
+            })
+            .fail(function (err) {
+              console.log(WriteCommand);
+              console.log(err);
+            });
+        }
+      }
+      // window.writeTag("Local Station/Channel1/Device1/Control_EV1",1)
+      function getAllElementsAsync() {
+        if (serverHubProxy != null) {
+          isStarted &&
+            serverHubProxy.server.getAllElementsAsync().done((value) => {
+              // alert(value)
+              let res = JSON.parse(value);
+
+              let Schannels = res[1].Childs;
+              window.channels = Schannels;
+
+              Schannels.forEach((channel) => {
+                let devices = channel.Childs;
+                //console.log(devices)
+                if (devices) {
+                  window.devices = devices;
+                  devices.forEach(async (device) => {
+                    if (
+                      !(
+                        device.Name == "Device Statistics" ||
+                        device.Name == "Register Hints"
+                      )
+                    ) {
+                      //   console.log(device);
+                      let tags = device.Childs;
+
+                      if (tags && tags.length != 0) {
+                        if (device.Name == "GiuBuiEpVien") {
+                          console.log(tags);
+                          window.tags = tags;
+                        }
+
+                        // switch (device.Name) {
+                        //   case "KhoNghienTho":
+                        //     // console.log(tags)
+                        //     window.tagsKhoNgTho = tags;
+                        //   await  settagsKhoNTho(tags);
+                        //     break;
+                        //   case "KhoNghienTinh":
+                        //     window.tagsKhoNgTinh = tags;
+                        //    await settagsKhoNgTinh(tags);
+                        //     break;
+                        //   case "KhoSauSay":
+                        //     window.tagsKhoSauSay = tags;
+                        //   await  settagsKhoSauSay(tags);
+                        //     break;
+                        //   case "MayNghienTho1":
+                        //     window.tagsMayNTho1 = tags;
+                        //   await  settagsMayNTho1(tags);
+                        //     break;
+                        //   case "MayNghienTho2":
+                        //     window.tagsMayNTho2 = tags;
+                        //   await  settagsMayNTho2(tags)
+                        //     break;
+                        //   case "MayNghienTinh1":
+                        //     window.tagsMayNTinh = tags;
+                        //   await settagsMayNTinh(tags);
+                        //     break;
+                        //   case "GiuBuiEpVien":
+                        //     window.tagsGiuBuiEpVien = tags;
+                        //   await  settagsGiuBuiEpVien(tags)
+                        //     break;
+                        //   case "PhuTroEpVien":
+                        //     window.tagsPhuTroEpVien = tags;
+                        //   await  settagsPhuTroEpVien(tags)
+                        //     break;
+                        //   case "MayEpVien1":
+                        //     window.tagsMayEpVien1 = tags;
+                        //     await  settagsMayEp1(tags)
+                        //     break;
+                        //   case "MayEpVien2":
+                        //     window.tagsMayEpVien2 = tags;
+                        //     await  settagsMayEp2(tags)
+                        //     break;
+
+                        //   default:
+                        //     break;
+                        // }
+
+                        // callback(tags);
+
+                        // callback(tags);
+                        // tags.forEach((tag) => {
+                        //   // console.log(tag)
+                        //   // console.log(tag.Path);
+                        // });
+                      }
+                    }
+                    // if (device.Name != 'Device Statistics') {
+
+                    // }
+                  });
+                }
+              });
+              // console.log(value);
+
+              // while (res[1].Childs.length != 0) {
+              //     // console.log(res.Childs)
+              // }
+              // console.log(JSON.parse(value));
+            });
+        }
+      }
+      $(window).on("unload", function (e) {
+        disconnect();
+      });
+
+      $(window).on("load", async function (e) {
+        connect();
+      });
+      $(document).ready(function () {
+        // $('#Control_NTho1').click((e)=>{
+        //   $('#Control_NTho2').val(true);
+        //     console.log(e.target.checked)
+        //     // alert(this.Name)
+        // })
+        // $('#Control_NTho2').click((e)=>{
+        //   $('#switch').attr('checked', 0);
+        //     console.log(e)
+        // })
+        // setTimeout(()=>{
+        //   $('#Control_NTho1').attr("checked",true)
+        // },5000)
+        
+        window.setTimeout(()=>{
+          var Status = $("#status");
+          
+              if (isStarted) {
+                Status.css({ background: "green", color: "white" });
+                Status.html("Connected");
+              }
+          })
+        },2000);
+        
+    </script>
+  </body>
 </html>

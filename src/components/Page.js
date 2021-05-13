@@ -4,13 +4,20 @@ import PropTypes from 'prop-types';
 import { makeStyles } from "@material-ui/core";
 const useStyle = makeStyles({
   page:{
-    display:'flex',
-    height:'100vh',
-    color:'blue',
-    // top:'10px',
+    // display:'flex',
+    height:'100%',
+   
+    // position:'relative',
+    // top:'50%',
+    // left:'50%',
+    // transform:'translate(-50%,-50%)',
     margin:'0 auto',
     alignItems:'center',
-    justifyContent:'center'
+    justifyContent:'center',
+    width:'100%',
+    padding:20,
+    paddingTop:30,
+    
   }
 });
 const Page = forwardRef(({

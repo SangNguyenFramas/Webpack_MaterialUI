@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation,useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -13,13 +13,9 @@ import {
   makeStyles
 } from '@material-ui/core';
 import {
-  AlertCircle as AlertCircleIcon,
+ 
   BarChart as BarChartIcon,
-  Lock as LockIcon,
-  Settings as SettingsIcon,
-  ShoppingBag as ShoppingBagIcon,
-  User as UserIcon,
-  UserPlus as UserPlusIcon,
+  
   Users as UsersIcon
 } from 'react-feather';
 import NavItem from './NavItem';
@@ -47,13 +43,16 @@ const items = [
 
 const useStyles = makeStyles(() => ({
   mobileDrawer: {
-    width: 256
+    width: 256,
+    backgroundColor:'#333'
   },
   desktopDrawer: {
     width: 256,
     top: 64,
     height: 'calc(100% - 64px)',
-    position:'fixed'
+    position:'fixed',
+    backgroundColor:'#333',
+    color:'white'
   },
   avatar: {
     cursor: 'pointer',
@@ -63,17 +62,24 @@ const useStyles = makeStyles(() => ({
   btnlogout:{
       boxShadow:'6px 6px 24px 5px rgba(0,0,0,0.75);',
       backgroundColor:'#fff',
+      '&:hover':{
+        backgroundColor:'#bdbdbd'
+      },
       '&:active':{
-        backgroundColor:'cyan'
+        backgroundColor:'#fff9c4'
       },
       marginTop:'100px'
   }
 }));
 
 const NavBar = ({ onMobileClose, openMobile }) => {
+  const navigate = useNavigate();
   const classes = useStyles();
   const location = useLocation();
-
+  const handleLogout = () => {
+    localStorage.removeItem('isLogin');
+    navigate('/login', { replace: true });
+  }
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
@@ -125,8 +131,8 @@ const NavBar = ({ onMobileClose, openMobile }) => {
             />
           ))}
           <Divider />
-           <Hidden smUp>
-          <Button color='primary' fullWidth className={classes.btnlogout}>
+           <Hidden xlUp>
+          <Button color='secondary' fullWidth className={classes.btnlogout} onClick={handleLogout}>
             Logout
           </Button>
           </Hidden>

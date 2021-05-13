@@ -5,7 +5,7 @@ import App from './App';
 
 // import './assets/styles/style.scss';
 // import './assets/styles/style.css';
-import './index.scss'
+// import './index.scss'
 
 ReactDOM.render((
   <BrowserRouter>

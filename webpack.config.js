@@ -15,6 +15,7 @@ module.exports = {
     devServer: {
         contentBase: path.join(__dirname, 'src'),
         historyApiFallback: true,
+        disableHostCheck: true
     },
     plugins: [
         new HtmlWebpackPlugin({

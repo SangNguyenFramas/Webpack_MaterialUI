@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -13,7 +13,6 @@ import {
   Typography,
   makeStyles,
   Snackbar,
-  Checkbox,
   
 } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -40,12 +39,7 @@ const LoginView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
-  const [initialValues,setinitialValues]=useState({
-    email: '',
-    password: '',
-    remember:false
-  });
-  const ref = useRef(null)
+
   const handleClick = () => {
     setOpen(true);
   };
@@ -59,35 +53,11 @@ const LoginView = () => {
 
   useEffect(() => {
     let initialValues={
-      'email': 'Admin@admin.io',
+      'email': 'Amin@admin.io',
       'password': '11111'
     }
-    if (localStorage.getItem('userInfo')==null) {
-      var dataStored = CryptoJS.AES.encrypt(JSON.stringify(initialValues), 'matkhaulagiconlaumoinoi').toString();
-      localStorage.setItem('userInfo',dataStored);
-    }
-    var currentUser = localStorage.getItem('currentUser')
-    if (currentUser) {
-      
-      const bytes = CryptoJS.AES.decrypt(currentUser, 'matkhaulagiconlaumoinoi');
-      const storedCurrentUser = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-      // alert(storedCurrentUser)
-      if (storedCurrentUser.remember == true) {
-      
-        // let form = ref.current.instance
-        // form.values.email = storedCurrentUser.email;
-        // form.values.password = storedCurrentUser.password;
-        // form.values.remember = storedCurrentUser.remember;
-        setinitialValues({
-          email:storedCurrentUser.email,
-          password:storedCurrentUser.password,
-          remember:storedCurrentUser.remember,
-          })
-       console.log(storedCurrentUser)
-      }
-     
-   } 
-
+    var dataStored = CryptoJS.AES.encrypt(JSON.stringify(initialValues), 'matkhaulagiconlaumoinoi').toString();
+    localStorage.setItem('userInfo',dataStored)
     return () => {
       
     }
@@ -107,39 +77,33 @@ const LoginView = () => {
       >
         <Container maxWidth="sm" className={classes.content}>
           <Formik
-            enableReinitialize={true}
-            // ref={ref}
-            // initialValues={{
-            //   email: '',
-            //   password: '',
-            //   remember:false
-            // }}
-            initialValues={initialValues}
+            initialValues={{
+              email: '',
+              password: ''
+            }}
             validationSchema={Yup.object().shape({
               email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-              password: Yup.string().max(255).required('Password is required'),
-              remember:Yup.boolean()
+              password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={(values,actions) => {
-              
+              setTimeout(() => {
                 var dataStored = localStorage.getItem('userInfo')
                 // console.log(dataStored)
                 if(dataStored){
-                  
+                
                   const bytes = CryptoJS.AES.decrypt(dataStored, 'matkhaulagiconlaumoinoi');
-                  
+                 
                   const storedUserInfo = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-               
+                 
                   if (storedUserInfo.email == values.email && storedUserInfo.password == values.password ) {
-                    var newdataStored = CryptoJS.AES.encrypt(JSON.stringify(values), 'matkhaulagiconlaumoinoi').toString();
-                    localStorage.setItem('isLogin',newdataStored);
-                    localStorage.setItem('currentUser',newdataStored);
-                    navigate('/app/dashboard', { replace: true });
+                      navigate('/app/dashboard', { replace: true });
+
                   }
                   else
                     setOpen(true);
-                    // actions.setSubmitting(true);
+                    actions.setSubmitting(true);
                 }
+              }, 3000);
             }}
             // handleChange={e=>{
             //     alert(e);
@@ -150,7 +114,7 @@ const LoginView = () => {
               handleBlur,
               handleChange,
               handleSubmit,
-              // isSubmitting,
+              isSubmitting,
               touched,
               values
             }) => (
@@ -198,31 +162,10 @@ const LoginView = () => {
                   value={values.password}
                   variant="outlined"
                 />
-                <Box
-                  alignItems="center"
-                  display="flex"
-                  ml={-1}
-                >
-                  <Checkbox
-                    checked={values.remember}
-                    name="remember"
-                    onChange={handleChange}
-                  />
-                  <Typography
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                   Remember Me
-                    {' '}
-                   
-                  </Typography>
-                </Box>
                 <Box my={2} p={3}>
-
-
                   <Button
                     color="primary"
-                    // disabled={isSubmitting}
+                     disabled={false}
                     fullWidth
                     size="large"
                     type="submit"
@@ -231,19 +174,6 @@ const LoginView = () => {
                     Sign in
                   </Button>
                 </Box>
-                <Typography
-                  color="textSecondary"
-                  variant="overline"
-                >
-                 
-                  <Link
-                    component={RouterLink}
-                    to="/change-password"
-                    variant="h5"
-                  >
-                    Change Password
-                  </Link>
-                </Typography>
               </form>
             )}
           </Formik>
