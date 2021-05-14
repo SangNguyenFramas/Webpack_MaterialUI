@@ -24,17 +24,21 @@
       //Reference to simpleHub proxy
       let serverHubProxy;
       let isConnected;
-      // let url = "http://localhost:1000/signalr";
-      let url = "http://baochauphuyen.ddns.net:8800/easyScada";
+      let url = "http://113.163.139.169:8800/easyScada";
+      // let Prefix = "Local Station/Channel1/Device1";
+      // let url = "http://baochauphuyen.ddns.net:8800/easyScada";
       let svg;
       let messagejson;
       let station;
       let channels = [];
       let devices = [];
       let tags = [];
+      let Subcribedtags = [];
       let tag = null;
       let isStarted = false;
       //Write given text to log area
+
+      //Đọc giá trị của các tag đã đăng kí
 
       //Connect to the SignalR server and get the proxy for simpleHub
       function connect() {
@@ -43,10 +47,16 @@
           // Declare a proxy to reference the hub.
           // serverHubProxy = $.connection.serverHub;
           serverHubProxy = $.connection.easyDriverServerHub;
+          // serverHubProxy.client.broadcastSubscribeData = function (tagsAsJsonStr) {
+          //   var SW1=  document.getElementById('OnOff');
+          //   console.log(SW1)
+          // };
+
           //Reigster to the "AddMessage" callback method of the hub
           //This method is invoked by the hub
           // serverHubProxy.client.addMessage = function (name, message) {};
-
+          var tagsJson =
+            `['Local Station/Channel1/Device1/OnOff','Local Station/Channel1/Device1/Error','Local Station/Channel1/Device1/OnOff1','Local Station/Channel1/Device1/Error1']`;
           //Connect to hub
           $.connection.hub
             .start()
@@ -54,12 +64,20 @@
               //  await getAllTagsAsync("Local Station/Channel1/Device1");
               //  await getTagAsync(tags[0].Path)
               // callback(tags);
-              // alert('done')
+
               //  await getAllTagsAsync("RemoteStation1/PLCNghien_EpVien/GiuBuiEpVien");
-              window.isStarted =  true;
-              getAllElementsAsync();
+
+              window.isStarted = true;
+              //Đăng kí tag để subcribe
+              serverHubProxy.server.subscribe(
+                tagsJson,
+                "ReceiveFromServer",
+                500
+              );
+              getSubscribedData();
+
+              //getAllElementsAsync();
               // console.log(tags)
-              
             })
             .fail(function () {
               alert("failed");
@@ -107,6 +125,14 @@
             }
           });
         });
+      }
+
+      function getSubscribedData() {
+        if (serverHubProxy != null) {
+          serverHubProxy.server.getSubscribedData().done(function (res) {
+            window.Subcribedtags = JSON.parse(res);
+          });
+        }
       }
 
       //Disconnect from the server
@@ -206,17 +232,22 @@
             .done(console.log("a"));
         }
       }
-      function writeTag(Path, value) {
+      function writeTag(prefix,tagName, value,callback) {
+       
         if (serverHubProxy != null) {
           var WriteMode = {
             WriteAllValue: 0,
             WriteLatestValue: 1,
           };
+          // var WritePiority = {
+          //   Default: 0,
+          //   Medium: 1,
+          //   High: 2,
+          //   Highest: 3,
+          // };
           var WritePiority = {
             Default: 0,
-            Medium: 1,
-            High: 2,
-            Highest: 3,
+            High: 1
           };
           var today = new Date();
           var dd = String(today.getDate()).padStart(2, "0");
@@ -225,22 +256,38 @@
 
           // today = mm + "/" + dd + "/" + yyyy;
           var WriteCommand = {
-            PathToTag: Path,
-            Value: value,
+            AllowExecuteNextCommandsWhenFail: false,
+            CustomWriteAddress: null,
+            CustomWriteValue: null,
+            Delay: 0,
+            IsCustomWrite: false,
+            NextCommands: null,
+            Prefix: prefix,
+            ReceiveTime: today,
             SendTime: today,
-            WritePiority: WritePiority.Highest,
-            WriteMode: WriteMode.WriteLatestValue,
+            TagName: tagName,
+            Timeout: 30000,
+            TryTimes: 3,
+            Value: value,
+            WriteMode:WriteMode.WriteAllValue,
+            WritePiority: WritePiority.High,
           };
 
           serverHubProxy.server
             .writeTagValueAsync(WriteCommand)
-            .done((value) => {
-              //  console.log(JSON.stringify(value.WriteCommand));
-              console.log(value);
+            .done((res) => {
+              if(res.IsSuccess)
+              callback("ok");
+              else  
+              callback("failed");
+              // console.log(JSON.stringify(res));
+              // console.log(JSON.stringify(res.WriteCommand));
+              // console.log(res);
             })
             .fail(function (err) {
-              console.log(WriteCommand);
-              console.log(err);
+              callback("failed");
+              // console.log(WriteCommand);
+              //console.log(err);
             });
         }
       }
@@ -367,17 +414,19 @@
         // setTimeout(()=>{
         //   $('#Control_NTho1').attr("checked",true)
         // },5000)
-        
-        window.setTimeout(()=>{
+
+        window.setTimeout(() => {
           var Status = $("#status");
-          
-              if (isStarted) {
-                Status.css({ background: "green", color: "white" });
-                Status.html("Connected");
-              }
-          })
-        },2000);
-        
+
+          if (isStarted) {
+            Status.css({ background: "green", color: "white" });
+            Status.html("Connected");
+          }
+        });
+      }, 2000);
+      window.setInterval(() => {
+          getSubscribedData();
+      }, 1000);
     </script>
   </body>
 </html>

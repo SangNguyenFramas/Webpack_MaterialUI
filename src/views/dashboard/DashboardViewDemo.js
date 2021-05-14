@@ -22,6 +22,7 @@ import {
 import Page from "../../components/Page";
 import { yellow } from "@material-ui/core/colors";
 import SSwitch from "../../components/SSwitch";
+import MayNghienControler from "../../components/MayNghienControler";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -157,7 +158,7 @@ export default () => {
                 className={classes.gridItem}
               >
               
-                <SSwitch title="Control_NTho1" id="Control_NTho1"></SSwitch>
+                <SSwitch tagname="OnOff" Prefix="Local Station/Channel1/Device1" ></SSwitch>
               </Grid>
               <Grid
                 item
@@ -167,7 +168,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_NTho2" id="Control_NTho2"></SSwitch>
+                <SSwitch tagname="Error" id="Error"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -177,7 +178,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_NTinh" id="Control_NTinh"></SSwitch>
+                <SSwitch tagname="OnOff1" id="OnOff1"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -187,7 +188,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_EV1" id="Control_EV1"></SSwitch>
+                <SSwitch tagname="Error1" id="Error1"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -197,7 +198,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_EV2" id="Control_EV2"></SSwitch>
+                <SSwitch tagname="Control_EV2" id="Control_EV2"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -207,7 +208,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_BTai1" id="Control_BTai1"></SSwitch>
+                <SSwitch tagname="Control_BTai1" id="Control_BTai1"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -217,7 +218,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_BTai2" id="Control_BTai2"></SSwitch>
+                <SSwitch tagname="Control_BTai2" id="Control_BTai2"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -227,7 +228,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_BTai3" id='Control_BTai3'></SSwitch>
+                <SSwitch tagname="Control_BTai3" id='Control_BTai3'></SSwitch>
               </Grid>
               <Grid
                 item
@@ -237,7 +238,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_FD_A11" id="Control_FD_A11"></SSwitch>
+                <SSwitch tagname="Control_FD_A11" id="Control_FD_A11"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -247,7 +248,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_FD_A12" id="Control_FD_A12"></SSwitch>
+                <SSwitch tagname="Control_FD_A12" id="Control_FD_A12"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -257,7 +258,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_FD_A21" id="Control_FD_A21"></SSwitch>
+                <SSwitch tagname="Control_FD_A21" id="Control_FD_A21"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -267,7 +268,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_FD_A22" id="Control_FD_A22"></SSwitch>
+                <SSwitch tagname="Control_FD_A22" id="Control_FD_A22"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -277,7 +278,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_QH1" id="Control_QH1"></SSwitch>
+                <SSwitch tagname="Control_QH1" id="Control_QH1"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -287,7 +288,7 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_QH2" id="Control_QH2"></SSwitch>
+                <SSwitch tagname="Control_QH2" id="Control_QH2"></SSwitch>
               </Grid>
               <Grid
                 item
@@ -297,9 +298,11 @@ export default () => {
                 xs={12}
                 className={classes.gridItem}
               >
-                <SSwitch title="Control_QH3" id="Control_QH3"></SSwitch>
+                <SSwitch tagname="Control_QH3" id="Control_QH3"></SSwitch>
               </Grid>
             </Grid>
+            <MayNghienControler title="Máy nghiền thô 1" index={1}></MayNghienControler>
+            <MayNghienControler title="Máy nghiền thô 2" index={2}></MayNghienControler>
           </CardContent>
         </Card>
       </Paper>
