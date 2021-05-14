@@ -23,6 +23,7 @@ import Page from "../../components/Page";
 import { yellow } from "@material-ui/core/colors";
 import SSwitch from "../../components/SSwitch";
 import MayNghienControler from "../../components/MayNghienControler";
+import FullWidthTabs from "../../components/FullWidthTabs";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -148,7 +149,7 @@ export default () => {
           />
           
           <CardContent className={classes.cardContent}>
-            <Grid container spacing={5} justify="space-between">
+            {/* <Grid container spacing={5} justify="space-between">
               <Grid
                 item
                 lg={3}
@@ -300,9 +301,10 @@ export default () => {
               >
                 <SSwitch tagname="Control_QH3" id="Control_QH3"></SSwitch>
               </Grid>
-            </Grid>
-            <MayNghienControler title="Máy nghiền thô 1" index={1}></MayNghienControler>
-            <MayNghienControler title="Máy nghiền thô 2" index={2}></MayNghienControler>
+            </Grid> */}
+            <FullWidthTabs></FullWidthTabs>
+            {/* <MayNghienControler title="Máy nghiền thô 1" index={1}></MayNghienControler>
+            <MayNghienControler title="Máy nghiền thô 2" index={2}></MayNghienControler> */}
           </CardContent>
         </Card>
       </Paper>

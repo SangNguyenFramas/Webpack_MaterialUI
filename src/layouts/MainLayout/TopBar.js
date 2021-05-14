@@ -17,6 +17,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
 import TagFile from '../../components/SignalRTag.json'
+import FullWidthTabs from '../../components/FullWidthTabs';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -86,6 +87,7 @@ const TopBar = ({
   }, [])
 
   return (
+    <>
     <AppBar position='fixed'
       className={clsx(classes.root, className)}
       elevation={0}
@@ -172,8 +174,12 @@ const TopBar = ({
             <MenuIcon />
           </IconButton>
         </Hidden>
+     
       </Toolbar>
+     
     </AppBar>
+    
+    </>
   );
 };
 

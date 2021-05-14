@@ -118,12 +118,10 @@ const callback =(status)=>{
     if (reason === "clickaway") {
       return;
     }
-
     setNotify(
       {
+        ...notify,
         open:false,
-        status:"success",
-        message:''
       }
     );
   };
@@ -167,7 +165,7 @@ const callback =(status)=>{
           />
         }
       />
-      <Snackbar open={notify.open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{vertical:'top',horizontal:'right'}}>
+      <Snackbar open={notify.open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{vertical:'bottom',horizontal:'center'}}>
         <Alert onClose={handleClose} severity={notify.status}>
          {notify.message}
         </Alert>
